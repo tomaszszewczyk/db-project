@@ -10,7 +10,7 @@ BEGIN
   IF (@StartDate > @EndDate)
     BEGIN
       RAISERROR ('Start date cannot be later than end date', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
@@ -74,14 +74,14 @@ BEGIN
   IF @Seats < 0
     BEGIN
       RAISERROR ('Number of seats must be a positive number', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
   IF NOT @Date BETWEEN dbo.GetConferenceStartDate(@ConferenceID) AND dbo.GetConferenceEndDate(@ConferenceID)
     BEGIN
       RAISERROR ('Conference day date must be within conference', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
@@ -100,14 +100,14 @@ BEGIN
   IF @MinOutrunning > @MaxOutrunning
     BEGIN
       RAISERROR ('Min outrunning cannot be bigger than max outrunning', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
   IF NOT EXISTS(SELECT * FROM Conference WHERE Conference.ConferenceID = @ConferenceID)
     BEGIN
       RAISERROR ('Conference ID does not exist', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
@@ -124,21 +124,21 @@ BEGIN
   IF @StartTime > @EndTime
     BEGIN
       RAISERROR ('Seminar start time cannot be later than end time', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     end
 
   IF NOT EXISTS(SELECT * FROM ConferenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
     BEGIN
       RAISERROR ('Conference day ID does not exist', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
   IF @Seats < 0
     BEGIN
       RAISERROR ('Number of seats must be a positive number', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
@@ -148,7 +148,7 @@ END
 GO
 
 -- Get available seats by conference day ID
-CREATE OR ALTER FUNCTION GetFreeSeatsByConferenceID(@ConferenceDayID INT)
+CREATE OR ALTER FUNCTION GetFreeSeatsByConferenceDayID(@ConferenceDayID INT)
   RETURNS INT
 AS
 BEGIN
@@ -195,28 +195,28 @@ BEGIN
   IF @SeatsReserved < 0
     BEGIN
       RAISERROR ('Reservation for zero seats does not make sense', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
-  IF @SeatsReserved > dbo.GetFreeSeatsByConferenceID(@ConferenceDayID)
+  IF @SeatsReserved > dbo.GetFreeSeatsByConferenceDayID(@ConferenceDayID)
     BEGIN
       RAISERROR ('Not enough free seats to make a reservation', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
   IF NOT EXISTS(SELECT * FROM Customers WHERE Customers.CustomerID = @CustomerID)
     BEGIN
       RAISERROR ('Conference day ID does not exist', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
   IF NOT EXISTS(SELECT * FROM ConferenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
     BEGIN
       RAISERROR ('Conference day ID does not exist', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
@@ -250,21 +250,21 @@ BEGIN
   IF @Name = ''
     BEGIN
       RAISERROR ('Name cannot be empty string', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     end
 
   IF @Email = ''
     BEGIN
       RAISERROR ('Email cannot be empty string', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     end
 
   IF @Phone = ''
     BEGIN
       RAISERROR ('Phone cannot be empty string', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     end
 
@@ -280,7 +280,7 @@ BEGIN
   IF NOT EXISTS(SELECT * FROM Reservations WHERE Reservations.ReservationID = @ReservationsID)
     BEGIN
       RAISERROR ('Reservation ID does not exist', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
@@ -296,7 +296,7 @@ BEGIN
   IF NOT EXISTS(SELECT * FROM Reservations WHERE Reservations.ReservationID = @ReservationsID)
     BEGIN
       RAISERROR ('Reservation ID does not exist', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
@@ -313,7 +313,7 @@ BEGIN
       SELECT * FROM SeminarReservations WHERE SeminarReservations.SeminarReservationID = @SeminarReservationID)
     BEGIN
       RAISERROR ('Seminar reservation ID does not exist', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
@@ -322,7 +322,7 @@ BEGIN
                 WHERE ConferenceParticipants.ConferenceParticipantID = @ConferenceParticipantID)
     BEGIN
       RAISERROR ('Conference participant ID does not exist', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 end
@@ -335,28 +335,28 @@ BEGIN
   IF @SeatsReserved < 0
     BEGIN
       RAISERROR ('Reservation for zero seats does not make sense', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
   IF NOT EXISTS(SELECT * FROM Seminar WHERE Seminar.SeminarID = @SeminarID)
     BEGIN
       RAISERROR ('Seminar ID does not exist', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
   IF @SeatsReserved > dbo.GetFreeSeatsBySeminarID(@SeminarID)
     BEGIN
       RAISERROR ('Not enough free seats to make a reservation', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
   IF NOT EXISTS(SELECT * FROM Reservations WHERE Reservations.ReservationID = @ReservationID)
     BEGIN
       RAISERROR ('Conference reservation ID does not exist', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
@@ -384,21 +384,21 @@ BEGIN
   IF @FirstName = ''
     BEGIN
       RAISERROR ('First name cannot be empty string', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     end
 
   IF @LastName = ''
     BEGIN
       RAISERROR ('Last name cannot be empty string', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     end
 
   IF NOT EXISTS(SELECT * FROM Customers WHERE Customers.CustomerID = @CustomerID)
     BEGIN
       RAISERROR ('Customer ID does not exist', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
@@ -414,7 +414,7 @@ BEGIN
   IF NOT EXISTS(SELECT * FROM Attendats WHERE Attendants.AttendantID = @AttendantID)
     BEGIN
       RAISERROR ('Attendant ID does not exist', 0, 0)
-      ROLLBACK TRANSACTION
+      
       RETURN
     END
 
@@ -424,23 +424,28 @@ GO
 
 -- View reservations without attendants assigned
 CREATE OR ALTER VIEW ReservationsWithoutAttendants AS
-  SELECT Conference.Topic, Customers.* FROM ConferenceParticipants
-  LEFT JOIN Reservations ON Reservations.ReservationID = ConferenceParticipants.ReservationsID
-  LEFT JOIN ConferenceDay ON ConferenceDay.ConferenceDayID = Reservations.ConferenceDayID
-  LEFT JOIN Conference ON Conference.ConferenceID = ConferenceDay.ConferenceID
-  LEFT JOIN Customers ON Customers.CustomerID = Reservations.CustomerID
+SELECT Conference.Topic, Customers.*
+FROM ConferenceParticipants
+       LEFT JOIN Reservations ON Reservations.ReservationID = ConferenceParticipants.ReservationsID
+       LEFT JOIN ConferenceDay ON ConferenceDay.ConferenceDayID = Reservations.ConferenceDayID
+       LEFT JOIN Conference ON Conference.ConferenceID = ConferenceDay.ConferenceID
+       LEFT JOIN Customers ON Customers.CustomerID = Reservations.CustomerID
+GO
 
 -- View client summary
 CREATE OR ALTER VIEW CustomersReservationCount AS
-  SELECT Customers.CustomerID, COUNT(*) AS NumOfReservations FROM Customers
-  JOIN Reservations ON Reservations.CustomerID = Customers.CustomerID
-  GROUP BY Customers.CustomerID
+SELECT Customers.CustomerID, COUNT(*) AS NumOfReservations
+FROM Customers
+       JOIN Reservations ON Reservations.CustomerID = Customers.CustomerID
+GROUP BY Customers.CustomerID
+GO
 
 -- View best customers
 CREATE OR ALTER VIEW BestCustomersView AS
-  SELECT Customers.*, customer_count.NumOfReservations FROM Customers
-  JOIN CustomersReservationCount customer_count ON customer_count.CustomerID = Customers.CustomerID
-
+SELECT Customers.*, customer_count.NumOfReservations
+FROM Customers
+       JOIN CustomersReservationCount customer_count ON customer_count.CustomerID = Customers.CustomerID
+GO
 
 EXEC AddConferenceWithEndDate @Topic = 'Nuddyyyy', @StartDate = '2013-01-01', @EndDate = '2013-02-01', @Address = null,
      @DefaultPrice = 100, @DefaultSeats = 10
@@ -451,9 +456,12 @@ EXEC AddReservation @CustomerID = 1, @SeatsReserved = 5, @ConferenceDayID = 1
 EXEC AddSeminar @Seats = 100, @Price = 10, @StartTime = '10:00:00', @EndTime = '11:00:00', @ConferenceDayID = 1
 EXEC AddSeminarReservation @ReservationID = 1, @SeatsReserved = 2, @SeminarID = 1
 
-SELECT * From ReservationsWithoutAttendants
+SELECT *
+From ReservationsWithoutAttendants
 
 SELECT *
 FROM SeminarReservations
 
-SELECT * FROM BestCustomersView ORDER BY NumOfReservations
+SELECT *
+FROM BestCustomersView
+ORDER BY NumOfReservations
