@@ -21,3 +21,15 @@ AS
     RETURN @seminar+@conference
   END;
 
+CREATE OR ALTER function conference_day_list(@DayID int)
+RETURNS TABLE
+AS RETURN
+  SELECT DISTINCT FirstName, LastName from Attendants JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID=Attendants.AttendantID JOIN Reservations on ConferenceParticipants.ReservationsID = Reservations.ReservationID WHERE @DayID=Reservations.ConferenceDayID
+
+
+CREATE OR ALTER function conference_day_list(@DayID int)
+RETURNS TABLE
+AS RETURN
+  SELECT DISTINCT FirstName, LastName from Attendants JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID=Attendants.AttendantID JOIN Reservations on ConferenceParticipants.ReservationsID = Reservations.ReservationID WHERE @DayID=Reservations.ConferenceDayID
+
+

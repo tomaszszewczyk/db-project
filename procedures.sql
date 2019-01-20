@@ -465,3 +465,4 @@ FROM SeminarReservations
 SELECT *
 FROM BestCustomersView
 ORDER BY NumOfReservations
+
