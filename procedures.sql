@@ -195,6 +195,16 @@ BEGIN
           @CustomerID,
           @SeatsReserved,
           @ConferenceDayID)
+
+  DECLARE @last_added_reservation_id AS INT
+  SET @last_added_reservation_id = @@identity
+  DECLARE @index AS INT
+  SET @index = 0
+  WHILE @index < @SeatsReserved
+  BEGIN
+    EXEC AddConferenceParticipant @ReservationsID = @last_added_reservation_id, @AttendantID = null
+    SET @index = @index + 1
+  end
 END
 GO
 
@@ -228,7 +238,7 @@ GO
 CREATE OR ALTER PROCEDURE AddPayment @Amount NUMERIC(6,2), @ReservationsID INT
 AS BEGIN
 
-  IF NOT EXISTS(SELECT * FROM Reservations WHERE Reservations.ReservationsID = @ReservationsID)
+  IF NOT EXISTS(SELECT * FROM Reservations WHERE Reservations.ReservationID = @ReservationsID)
     BEGIN
       RAISERROR ('Reservation ID does not exist', 0, 0)
       RETURN
@@ -236,13 +246,30 @@ AS BEGIN
 
   INSERT INTO Payments(Amount, ReservationsID, PaymentDate) VALUES (@Amount, @ReservationsID, GETDATE())
 end
+GO
+
+-- Adds conference participant
+CREATE OR ALTER PROCEDURE AddConferenceParticipant @ReservationsID INT, @AttendantID INT
+AS BEGIN
+
+  IF NOT EXISTS(SELECT * FROM Reservations WHERE Reservations.ReservationID = @ReservationsID)
+    BEGIN
+      RAISERROR ('Reservation ID does not exist', 0, 0)
+      RETURN
+    END
+
+  INSERT INTO ConferenceParticipants (AttendantID, ReservationsID) VALUES (@AttendantID, @ReservationsID)
+end
+GO
 
 EXEC AddConferenceWithEndDate @Topic = '', @StartDate = '2013-01-01', @EndDate = '2013-02-01', @Address = null,
      @DefaultPrice = 100, @DefaultSeats = 10
 EXEC AddDiscount @MinOutrunning = 1, @MaxOutrunning = 2, @Discount = 10.00, @StudentDiscount = 20.00,
      @ConferenceID = 1
 EXEC AddCustomer @Name = 'Tomek', @Email = 'tomek@gmail.com', @Phone = '123321123'
-EXEC AddReservation @CustomerID = 1, @SeatsReserved = 10, @ConferenceDayID = 1
+EXEC AddReservation @CustomerID = 1, @SeatsReserved = 5, @ConferenceDayID = 1
 
 SELECT *
 FROM Reservations
+
+SELECT * FROM ConferenceParticipants
