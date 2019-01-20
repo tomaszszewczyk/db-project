@@ -380,6 +380,19 @@ BEGIN
 end
 GO
 
+-- Adds student ID
+CREATE OR ALTER PROCEDURE AddStudent @AttendantID INT, @StudendNumber INT
+AS BEGIN
+
+  IF NOT EXISTS(SELECT * FROM Attendats WHERE Attendants.AttendantID = @AttendantID)
+    BEGIN
+      RAISERROR ('Attendant ID does not exist', 0, 0)
+      RETURN
+    END
+
+  INSERT INTO Students(AttendantID, StudentNumber) VALUES(@AttendantID, @StudendNumber)
+end
+
 EXEC AddConferenceWithEndDate @Topic = '', @StartDate = '2013-01-01', @EndDate = '2013-02-01', @Address = null,
      @DefaultPrice = 100, @DefaultSeats = 10
 EXEC AddDiscount @MinOutrunning = 1, @MaxOutrunning = 2, @Discount = 10.00, @StudentDiscount = 20.00,
