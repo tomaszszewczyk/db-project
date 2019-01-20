@@ -224,6 +224,19 @@ BEGIN
 end
 GO
 
+-- Adds payment
+CREATE OR ALTER PROCEDURE AddPayment @Amount NUMERIC(6,2), @ReservationsID INT
+AS BEGIN
+
+  IF NOT EXISTS(SELECT * FROM Reservations WHERE Reservations.ReservationsID = @ReservationsID)
+    BEGIN
+      RAISERROR ('Reservation ID does not exist', 0, 0)
+      RETURN
+    END
+
+  INSERT INTO Payments(Amount, ReservationsID, PaymentDate) VALUES (@Amount, @ReservationsID, GETDATE())
+end
+
 EXEC AddConferenceWithEndDate @Topic = '', @StartDate = '2013-01-01', @EndDate = '2013-02-01', @Address = null,
      @DefaultPrice = 100, @DefaultSeats = 10
 EXEC AddDiscount @MinOutrunning = 1, @MaxOutrunning = 2, @Discount = 10.00, @StudentDiscount = 20.00,
