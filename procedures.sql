@@ -1,5 +1,5 @@
 -- Add conference procedure with end date
-CREATE PROCEDURE AddConferenceWithEndDate @Topic TEXT,
+CREATE OR ALTER PROCEDURE AddConferenceWithEndDate @Topic TEXT,
                                           @StartDate DATE,
                                           @EndDate DATE,
                                           @Address TEXT,
@@ -32,7 +32,7 @@ END
 GO
 
 -- Add conference procedure
-CREATE PROCEDURE AddConference @Topic TEXT, @StartDate DATE, @Address TEXT, @DefaultPrice NUMERIC(6, 2),
+CREATE OR ALTER PROCEDURE AddConference @Topic TEXT, @StartDate DATE, @Address TEXT, @DefaultPrice NUMERIC(6, 2),
                                @DefaultSeats INT
 AS
 EXEC AddConferenceWithEndDate
@@ -45,7 +45,7 @@ EXEC AddConferenceWithEndDate
 GO
 
 -- Get conference start date by conference ID
-CREATE FUNCTION GetConferenceStartDate(@ConferenceID INT)
+CREATE OR ALTER FUNCTION GetConferenceStartDate(@ConferenceID INT)
   RETURNS DATE
 AS
 BEGIN
@@ -56,7 +56,7 @@ END
 GO
 
 -- Get conference end date by conference ID
-CREATE FUNCTION GetConferenceEndDate(@ConferenceID INT)
+CREATE OR ALTER FUNCTION GetConferenceEndDate(@ConferenceID INT)
   RETURNS DATE
 AS
 BEGIN
@@ -67,7 +67,7 @@ END
 GO
 
 -- Adds new conference day
-CREATE PROCEDURE AddConferenceDay @Date DATE, @Seats INT, @Price NUMERIC(6, 2), @ConferenceID INT
+CREATE OR ALTER PROCEDURE AddConferenceDay @Date DATE, @Seats INT, @Price NUMERIC(6, 2), @ConferenceID INT
 AS
 BEGIN
   IF @Seats < 0
@@ -87,7 +87,7 @@ END
 GO
 
 -- Adds new discount
-CREATE PROCEDURE AddDiscount @MinOutrunning INT,
+CREATE OR ALTER PROCEDURE AddDiscount @MinOutrunning INT,
                              @MaxOutrunning INT,
                              @Discount NUMERIC(4, 2),
                              @StudentDiscount NUMERIC(4, 2),
@@ -112,7 +112,7 @@ END
 GO
 
 -- Adds new seminar
-CREATE PROCEDURE AddSeminar @Seats INT, @Price NUMERIC(6, 2), @StartTime TIME, @EndTime TIME, @ConferenceDayID INT
+CREATE OR ALTER PROCEDURE AddSeminar @Seats INT, @Price NUMERIC(6, 2), @StartTime TIME, @EndTime TIME, @ConferenceDayID INT
 AS
 BEGIN
   IF @StartTime > @EndTime
@@ -133,13 +133,103 @@ BEGIN
       RETURN
     END
 
-  INSERT INTO Seminar(SeminarID, Seats, Price, StartTime, EndTime, ConferenceDayID)
-  VALUES (@SeminarID, @Seats, @Price, @StartTime, @EndTime, @ConferenceDayID)
+  INSERT INTO Seminar(Seats, Price, StartTime, EndTime, ConferenceDayID)
+  VALUES (@Seats, @Price, @StartTime, @EndTime, @ConferenceDayID)
 END
+GO
+
+-- Get available seats by conference day ID
+CREATE OR ALTER FUNCTION GetFreeSeatsByConferenceID(@ConferenceDayID INT)
+  RETURNS INT
+AS
+BEGIN
+  DECLARE @all_seats_at_conference AS INT
+  DECLARE @already_taken_seats AS INT
+  DECLARE @result AS INT
+  SET @all_seats_at_conference = (SELECT Seats FROM ConferenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
+  SET @already_taken_seats =
+      (SELECT SUM(SeatsReserved)
+       FROM Reservations
+       WHERE Reservations.ConferenceDayID = @ConferenceDayID
+       GROUP BY Reservations.ConferenceDayID)
+  SET @result = @all_seats_at_conference - @already_taken_seats
+  RETURN @result
+END
+GO
+
+-- Adds new reservation
+CREATE OR ALTER PROCEDURE AddReservation @CustomerID INT, @SeatsReserved INT, @ConferenceDayID INT
+AS
+BEGIN
+  IF @SeatsReserved < 0
+    BEGIN
+      RAISERROR ('Reservation for zero seats does not make sense', 0, 0)
+      RETURN
+    END
+
+  IF @SeatsReserved > dbo.GetFreeSeatsByConferenceID(@ConferenceDayID)
+    BEGIN
+      RAISERROR ('Not enough free seats to make a reservation', 0, 0)
+      RETURN
+    END
+
+  IF NOT EXISTS(SELECT * FROM Customers WHERE Customers.CustomerID = @CustomerID)
+    BEGIN
+      RAISERROR ('Conference day ID does not exist', 0, 0)
+      RETURN
+    END
+
+  IF NOT EXISTS(SELECT * FROM ConferenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
+    BEGIN
+      RAISERROR ('Conference day ID does not exist', 0, 0)
+      RETURN
+    END
+
+  INSERT INTO Reservations(ReservationDate,
+                           PaymentDate,
+                           CustomerID,
+                           SeatsReserved,
+                           ConferenceDayID)
+  VALUES (GETDATE(),
+          null,
+          @CustomerID,
+          @SeatsReserved,
+          @ConferenceDayID)
+END
+GO
+
+-- Adds customer
+CREATE OR ALTER PROCEDURE AddCustomer @Name VARCHAR(50), @Email VARCHAR(50), @Phone VARCHAR(9)
+AS
+BEGIN
+  IF @Name = ''
+    BEGIN
+      RAISERROR ('Name cannot be empty string', 0, 0)
+      RETURN
+    end
+
+  IF @Email = ''
+    BEGIN
+      RAISERROR ('Email cannot be empty string', 0, 0)
+      RETURN
+    end
+
+  IF @Phone = ''
+    BEGIN
+      RAISERROR ('Phone cannot be empty string', 0, 0)
+      RETURN
+    end
+
+  INSERT INTO Customers(Name, Email, Phone) VALUES (@Name, @Email, @Phone)
+end
+GO
 
 EXEC AddConferenceWithEndDate @Topic = '', @StartDate = '2013-01-01', @EndDate = '2013-02-01', @Address = null,
      @DefaultPrice = 100, @DefaultSeats = 10
-EXEC AddDiscount @MinOutrunning = 1, @MaxOutrunning = 2, @Discount = 10.00, @StudentDiscount = 20.00, @ConferenceID = 1
+EXEC AddDiscount @MinOutrunning = 1, @MaxOutrunning = 2, @Discount = 10.00, @StudentDiscount = 20.00,
+     @ConferenceID = 1
+EXEC AddCustomer @Name = 'Tomek', @Email = 'tomek@gmail.com', @Phone = '123321123'
+EXEC AddReservation @CustomerID = 1, @SeatsReserved = 10, @ConferenceDayID = 1
 
 SELECT *
-FROM Discounts
+FROM Reservations
