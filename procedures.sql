@@ -430,6 +430,18 @@ CREATE OR ALTER VIEW ReservationsWithoutAttendants AS
   LEFT JOIN Conference ON Conference.ConferenceID = ConferenceDay.ConferenceID
   LEFT JOIN Customers ON Customers.CustomerID = Reservations.CustomerID
 
+-- View client summary
+CREATE OR ALTER VIEW CustomersReservationCount AS
+  SELECT Customers.CustomerID, COUNT(*) AS NumOfReservations FROM Customers
+  JOIN Reservations ON Reservations.CustomerID = Customers.CustomerID
+  GROUP BY Customers.CustomerID
+
+-- View best customers
+CREATE OR ALTER VIEW BestCustomersView AS
+  SELECT Customers.*, customer_count.NumOfReservations FROM Customers
+  JOIN CustomersReservationCount customer_count ON customer_count.CustomerID = Customers.CustomerID
+
+
 EXEC AddConferenceWithEndDate @Topic = 'Nuddyyyy', @StartDate = '2013-01-01', @EndDate = '2013-02-01', @Address = null,
      @DefaultPrice = 100, @DefaultSeats = 10
 EXEC AddDiscount @MinOutrunning = 1, @MaxOutrunning = 2, @Discount = 10.00, @StudentDiscount = 20.00,
@@ -443,3 +455,5 @@ SELECT * From ReservationsWithoutAttendants
 
 SELECT *
 FROM SeminarReservations
+
+SELECT * FROM BestCustomersView ORDER BY NumOfReservations
