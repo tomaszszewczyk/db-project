@@ -143,6 +143,7 @@ CREATE OR ALTER FUNCTION GetFreeSeatsByConferenceID(@ConferenceDayID INT)
   RETURNS INT
 AS
 BEGIN
+
   DECLARE @all_seats_at_conference AS INT
   DECLARE @already_taken_seats AS INT
   DECLARE @result AS INT
@@ -153,6 +154,26 @@ BEGIN
        WHERE Reservations.ConferenceDayID = @ConferenceDayID
        GROUP BY Reservations.ConferenceDayID)
   SET @result = @all_seats_at_conference - @already_taken_seats
+  RETURN @result
+END
+GO
+
+-- Get available seats by conference day ID
+CREATE OR ALTER FUNCTION GetFreeSeatsBySeminarID(@SeminarID INT)
+  RETURNS INT
+AS
+BEGIN
+
+  DECLARE @all_seats_at_seminar AS INT
+  DECLARE @already_taken_seats AS INT
+  DECLARE @result AS INT
+  SET @all_seats_at_seminar = (SELECT Seats FROM Seminar WHERE Seminar.SeminarID = @SeminarID)
+  SET @already_taken_seats =
+      (SELECT SUM(SeatsReserved)
+       FROM SeminarReservations
+       WHERE SeminarReservations.SeminarID = @SeminarID
+       GROUP BY SeminarReservations.SeminarID)
+  SET @result = @all_seats_at_seminar - @already_taken_seats
   RETURN @result
 END
 GO
@@ -262,14 +283,76 @@ AS BEGIN
 end
 GO
 
+-- Adds seminar participant
+CREATE OR ALTER PROCEDURE AddSeminarParticipant @SeminarReservationID INT, @ConferenceParticipantID INT
+AS BEGIN
+
+  IF NOT EXISTS(SELECT * FROM SeminarReservations WHERE SeminarReservations.SeminarReservationID = @SeminarReservationID)
+    BEGIN
+      RAISERROR ('Seminar reservation ID does not exist', 0, 0)
+      RETURN
+    END
+
+  IF NOT EXISTS(SELECT * FROM ConferenceParticipants WHERE ConferenceParticipants.ConferenceParticipantID = @ConferenceParticipantID)
+    BEGIN
+      RAISERROR ('Conference participant ID does not exist', 0, 0)
+      RETURN
+    END
+end
+GO
+
+-- Adds seminar reservations
+CREATE OR ALTER PROCEDURE AddSeminarReservation @ReservationID INT, @SeatsReserved INT, @SeminarID INT
+AS
+BEGIN
+  IF @SeatsReserved < 0
+    BEGIN
+      RAISERROR ('Reservation for zero seats does not make sense', 0, 0)
+      RETURN
+    END
+
+  IF NOT EXISTS(SELECT * FROM Seminar WHERE Seminar.SeminarID = @SeminarID)
+    BEGIN
+      RAISERROR ('Seminar ID does not exist', 0, 0)
+      RETURN
+    END
+
+  IF @SeatsReserved > dbo.GetFreeSeatsBySeminarID(@SeminarID)
+    BEGIN
+      RAISERROR ('Not enough free seats to make a reservation', 0, 0)
+      RETURN
+    END
+
+  IF NOT EXISTS(SELECT * FROM Reservations WHERE Reservations.ReservationID = @ReservationID)
+    BEGIN
+      RAISERROR ('Conference reservation ID does not exist', 0, 0)
+      RETURN
+    END
+
+  INSERT INTO SeminarReservations(ReservationID,
+                                  SeatsReserved,
+                                  SeminarID)
+  VALUES (@ReservationID, @SeatsReserved, @SeminarID)
+
+  DECLARE @last_added_reservation_id AS INT
+  SET @last_added_reservation_id = @@identity
+  DECLARE @index AS INT
+  SET @index = 0
+  WHILE @index < @SeatsReserved
+  BEGIN
+    EXEC AddSeminarParticipant @SeminarReservationID = @last_added_reservation_id, @ConferenceParticipantID = null
+    SET @index = @index + 1
+  end
+END
+GO
+
 EXEC AddConferenceWithEndDate @Topic = '', @StartDate = '2013-01-01', @EndDate = '2013-02-01', @Address = null,
      @DefaultPrice = 100, @DefaultSeats = 10
 EXEC AddDiscount @MinOutrunning = 1, @MaxOutrunning = 2, @Discount = 10.00, @StudentDiscount = 20.00,
      @ConferenceID = 1
 EXEC AddCustomer @Name = 'Tomek', @Email = 'tomek@gmail.com', @Phone = '123321123'
 EXEC AddReservation @CustomerID = 1, @SeatsReserved = 5, @ConferenceDayID = 1
+EXEC AddSeminar @Seats = 100, @Price = 10, @StartTime = '10:00:00', @EndTime = '11:00:00', @ConferenceDayID = 1
+EXEC AddSeminarReservation @ReservationID = 1, @SeatsReserved = 2, @SeminarID = 1
 
-SELECT *
-FROM Reservations
-
-SELECT * FROM ConferenceParticipants
+SELECT * FROM SeminarReservations
