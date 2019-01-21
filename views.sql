@@ -6,5 +6,3 @@ GO
 
 CREATE OR ALTER VIEW reservations_not_paid AS SELECT SUM(Amount) AS Paid, dbo.get_total_cost(ReservationsID) AS Cost, ReservationsID AS ReservationID from Payments GROUP BY ReservationsID HAVING (SUM(Amount)<dbo.get_total_cost(ReservationsID))
 GO
-
-CREATE OR ALTER VIEW conference_participants_list AS SELECT FirstName, LastName FROM Attendants
