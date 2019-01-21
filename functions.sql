@@ -17,7 +17,7 @@ RETURNS INT
 AS
   BEGIN
     DECLARE @seminar int = (SELECT SUM(dbo.get_seminar_reservation_cost(SeminarReservationID)) FROM SeminarReservations WHERE ReservationID=@Reservation)
-    DECLARE @conference int = (SELECT SUM(dbo.get_conference_reservation_cost(ReservationID)) FROM Reservations WHERE ReservationID=@Reservation)
+    DECLARE @conference int = dbo.get_conference_reservation_cost(ReservationID)
     RETURN @seminar+@conference
   END;
 
