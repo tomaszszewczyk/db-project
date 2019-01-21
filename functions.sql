@@ -27,9 +27,8 @@ AS RETURN
   SELECT DISTINCT FirstName, LastName from Attendants JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID=Attendants.AttendantID JOIN Reservations on ConferenceParticipants.ReservationsID = Reservations.ReservationID WHERE @DayID=Reservations.ConferenceDayID
 
 
-CREATE OR ALTER function conference_day_list(@DayID int)
+CREATE OR ALTER function seminar_day_list(@SeminarID int)
 RETURNS TABLE
 AS RETURN
-  SELECT DISTINCT FirstName, LastName from Attendants JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID=Attendants.AttendantID JOIN Reservations on ConferenceParticipants.ReservationsID = Reservations.ReservationID WHERE @DayID=Reservations.ConferenceDayID
-
+  SELECT DISTINCT FirstName, LastName from Attendants JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID=Attendants.AttendantID JOIN SeminarParticipants on ConferenceParticipants.ConferenceParticipantID = SeminarParticipants.ConferenceParticipantID JOIN SeminarReservations SR on SeminarParticipants.SeminarReservationID = SR.SeminarReservationID WHERE @SeminarID=SeminarID
 
