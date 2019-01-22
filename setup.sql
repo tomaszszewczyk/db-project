@@ -1,7 +1,8 @@
-
 use master
-if exists(select * from sys.databases where name='conference_project')
-    drop database conference_project
+if exists(select *
+          from sys.databases
+          where name = 'conference_project')
+  drop database conference_project
 create database conference_project
 use conference_project
 
@@ -119,46 +120,76 @@ CREATE TABLE Students (
 
 -- foreign keys
 -- Reference: Attendants_ConferenceParticipants (table: ConferenceParticipants)
-ALTER TABLE ConferenceParticipants ADD CONSTRAINT Attendants_ConferenceParticipants FOREIGN KEY (AttendantID) REFERENCES Attendants(AttendantID);
+ALTER TABLE ConferenceParticipants
+  ADD CONSTRAINT Attendants_ConferenceParticipants FOREIGN KEY (AttendantID) REFERENCES Attendants (AttendantID);
 
 -- Reference: Attendants_Customers (table: Attendants)
-ALTER TABLE Attendants ADD CONSTRAINT Attendants_Customers FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID);
+ALTER TABLE Attendants
+  ADD CONSTRAINT Attendants_Customers FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID);
 
 -- Reference: ConferenceDay_Conference (table: ConferenceDay)
-ALTER TABLE ConferenceDay ADD CONSTRAINT ConferenceDay_Conference FOREIGN KEY (ConferenceID) REFERENCES Conference(ConferenceID);
+ALTER TABLE ConferenceDay
+  ADD CONSTRAINT ConferenceDay_Conference FOREIGN KEY (ConferenceID) REFERENCES Conference (ConferenceID);
 
 -- Reference: ConferenceParticipants_Reservations (table: ConferenceParticipants)
-ALTER TABLE ConferenceParticipants ADD CONSTRAINT ConferenceParticipants_Reservations FOREIGN KEY (ReservationsID) REFERENCES Reservations(ReservationID);
+ALTER TABLE ConferenceParticipants
+  ADD CONSTRAINT ConferenceParticipants_Reservations FOREIGN KEY (ReservationsID) REFERENCES Reservations (ReservationID);
 
 -- Reference: Conference_Discounts (table: Discounts)
-ALTER TABLE Discounts ADD CONSTRAINT Conference_Discounts FOREIGN KEY (ConferenceID) REFERENCES Conference(ConferenceID);
+ALTER TABLE Discounts
+  ADD CONSTRAINT Conference_Discounts FOREIGN KEY (ConferenceID) REFERENCES Conference (ConferenceID);
 
 -- Reference: Payments_Reservations (table: Payments)
-ALTER TABLE Payments ADD CONSTRAINT Payments_Reservations FOREIGN KEY (ReservationsID) REFERENCES Reservations(ReservationID);
+ALTER TABLE Payments
+  ADD CONSTRAINT Payments_Reservations FOREIGN KEY (ReservationsID) REFERENCES Reservations (ReservationID);
 
 -- Reference: Reservations_ConferenceDay (table: Reservations)
-ALTER TABLE Reservations ADD CONSTRAINT Reservations_ConferenceDay FOREIGN KEY (ConferenceDayID) REFERENCES ConferenceDay(ConferenceDayID);
+ALTER TABLE Reservations
+  ADD CONSTRAINT Reservations_ConferenceDay FOREIGN KEY (ConferenceDayID) REFERENCES ConferenceDay (ConferenceDayID);
 
 -- Reference: Reservations_Customers (table: Reservations)
-ALTER TABLE Reservations ADD CONSTRAINT Reservations_Customers FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID);
+ALTER TABLE Reservations
+  ADD CONSTRAINT Reservations_Customers FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID);
 
 -- Reference: Reservations_SeminarReservations (table: SeminarReservations)
-ALTER TABLE SeminarReservations ADD CONSTRAINT Reservations_SeminarReservations FOREIGN KEY (ReservationID) REFERENCES Reservations(ReservationID);
+ALTER TABLE SeminarReservations
+  ADD CONSTRAINT Reservations_SeminarReservations FOREIGN KEY (ReservationID) REFERENCES Reservations (ReservationID);
 
 -- Reference: SeminarParticipants_ConferenceParticipants (table: SeminarParticipants)
-ALTER TABLE SeminarParticipants ADD CONSTRAINT SeminarParticipants_ConferenceParticipants FOREIGN KEY (ConferenceParticipantID) REFERENCES ConferenceParticipants(ConferenceParticipantID);
+ALTER TABLE SeminarParticipants
+  ADD CONSTRAINT SeminarParticipants_ConferenceParticipants FOREIGN KEY (ConferenceParticipantID) REFERENCES ConferenceParticipants (ConferenceParticipantID);
 
 -- Reference: SeminarParticipants_SeminarReservations (table: SeminarParticipants)
-ALTER TABLE SeminarParticipants ADD CONSTRAINT SeminarParticipants_SeminarReservations FOREIGN KEY (SeminarReservationID) REFERENCES SeminarReservations (SeminarReservationID);
+ALTER TABLE SeminarParticipants
+  ADD CONSTRAINT SeminarParticipants_SeminarReservations FOREIGN KEY (SeminarReservationID) REFERENCES SeminarReservations (SeminarReservationID);
 
 -- Reference: SeminarReservations_Seminar (table: SeminarReservations)
-ALTER TABLE SeminarReservations ADD CONSTRAINT SeminarReservations_Seminar FOREIGN KEY (SeminarID) REFERENCES Seminar(SeminarID);
+ALTER TABLE SeminarReservations
+  ADD CONSTRAINT SeminarReservations_Seminar FOREIGN KEY (SeminarID) REFERENCES Seminar (SeminarID);
 
 -- Reference: Seminar_ConferenceDay (table: Seminar)
-ALTER TABLE Seminar ADD CONSTRAINT Seminar_ConferenceDay FOREIGN KEY (ConferenceDayID) REFERENCES ConferenceDay(ConferenceDayID);
+ALTER TABLE Seminar
+  ADD CONSTRAINT Seminar_ConferenceDay FOREIGN KEY (ConferenceDayID) REFERENCES ConferenceDay (ConferenceDayID);
 
 -- Reference: Students_Attendants (table: Students)
-ALTER TABLE Students ADD CONSTRAINT Students_Attendants FOREIGN KEY (AttendantID) REFERENCES Attendants(AttendantID);
+ALTER TABLE Students
+  ADD CONSTRAINT Students_Attendants FOREIGN KEY (AttendantID) REFERENCES Attendants (AttendantID);
 
--- End of file.
+-- Constraints
+ALTER TABLE Conference
+  ADD CONSTRAINT Conference_DateCheck CHECK (Conference.StartDate <= Conference.EndDate);
 
+ALTER TABLE ConferenceDay
+  ADD CONSTRAINT ConferenceDay_SeatsCheck CHECK (ConferenceDay.Seats >= 0);
+
+ALTER TABLE Seminar
+  ADD CONSTRAINT Seminar_SeatsCheck CHECK (Seminar.Seats >= 0);
+
+ALTER TABLE Discounts
+  ADD CONSTRAINT Discounts_OutrunningCheck CHECK (Discounts.MinOutrunning <= Discounts.MaxOutrunning);
+
+ALTER TABLE Reservations
+  ADD CONSTRAINT Reservation_SeatsResercedCheck CHECK (Reservations.SeatsReserved >= 0);
+
+ALTER TABLE SeminarReservations
+  ADD CONSTRAINT SeminarReservations_SeatsReservedCheck CHECK (SeminarReservations.SeatsReserved >= 0);
