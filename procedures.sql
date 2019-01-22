@@ -10,7 +10,7 @@ BEGIN
   IF (@StartDate > @EndDate)
     BEGIN
       RAISERROR ('Start date cannot be later than end date', 0, 0)
-      
+
       RETURN
     END
 
@@ -74,14 +74,14 @@ BEGIN
   IF @Seats < 0
     BEGIN
       RAISERROR ('Number of seats must be a positive number', 0, 0)
-      
+
       RETURN
     END
 
   IF NOT @Date BETWEEN dbo.GetConferenceStartDate(@ConferenceID) AND dbo.GetConferenceEndDate(@ConferenceID)
     BEGIN
       RAISERROR ('Conference day date must be within conference', 0, 0)
-      
+
       RETURN
     END
 
@@ -100,14 +100,14 @@ BEGIN
   IF @MinOutrunning > @MaxOutrunning
     BEGIN
       RAISERROR ('Min outrunning cannot be bigger than max outrunning', 0, 0)
-      
+
       RETURN
     END
 
   IF NOT EXISTS(SELECT * FROM Conference WHERE Conference.ConferenceID = @ConferenceID)
     BEGIN
       RAISERROR ('Conference ID does not exist', 0, 0)
-      
+
       RETURN
     END
 
@@ -124,21 +124,21 @@ BEGIN
   IF @StartTime > @EndTime
     BEGIN
       RAISERROR ('Seminar start time cannot be later than end time', 0, 0)
-      
+
       RETURN
     end
 
   IF NOT EXISTS(SELECT * FROM ConferenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
     BEGIN
       RAISERROR ('Conference day ID does not exist', 0, 0)
-      
+
       RETURN
     END
 
   IF @Seats < 0
     BEGIN
       RAISERROR ('Number of seats must be a positive number', 0, 0)
-      
+
       RETURN
     END
 
@@ -195,28 +195,28 @@ BEGIN
   IF @SeatsReserved < 0
     BEGIN
       RAISERROR ('Reservation for zero seats does not make sense', 0, 0)
-      
+
       RETURN
     END
 
   IF @SeatsReserved > dbo.GetFreeSeatsByConferenceDayID(@ConferenceDayID)
     BEGIN
       RAISERROR ('Not enough free seats to make a reservation', 0, 0)
-      
+
       RETURN
     END
 
   IF NOT EXISTS(SELECT * FROM Customers WHERE Customers.CustomerID = @CustomerID)
     BEGIN
       RAISERROR ('Conference day ID does not exist', 0, 0)
-      
+
       RETURN
     END
 
   IF NOT EXISTS(SELECT * FROM ConferenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
     BEGIN
       RAISERROR ('Conference day ID does not exist', 0, 0)
-      
+
       RETURN
     END
 
@@ -250,21 +250,21 @@ BEGIN
   IF @Name = ''
     BEGIN
       RAISERROR ('Name cannot be empty string', 0, 0)
-      
+
       RETURN
     end
 
   IF @Email = ''
     BEGIN
       RAISERROR ('Email cannot be empty string', 0, 0)
-      
+
       RETURN
     end
 
   IF @Phone = ''
     BEGIN
       RAISERROR ('Phone cannot be empty string', 0, 0)
-      
+
       RETURN
     end
 
@@ -280,7 +280,7 @@ BEGIN
   IF NOT EXISTS(SELECT * FROM Reservations WHERE Reservations.ReservationID = @ReservationsID)
     BEGIN
       RAISERROR ('Reservation ID does not exist', 0, 0)
-      
+
       RETURN
     END
 
@@ -296,7 +296,7 @@ BEGIN
   IF NOT EXISTS(SELECT * FROM Reservations WHERE Reservations.ReservationID = @ReservationsID)
     BEGIN
       RAISERROR ('Reservation ID does not exist', 0, 0)
-      
+
       RETURN
     END
 
@@ -313,7 +313,7 @@ BEGIN
       SELECT * FROM SeminarReservations WHERE SeminarReservations.SeminarReservationID = @SeminarReservationID)
     BEGIN
       RAISERROR ('Seminar reservation ID does not exist', 0, 0)
-      
+
       RETURN
     END
 
@@ -322,7 +322,7 @@ BEGIN
                 WHERE ConferenceParticipants.ConferenceParticipantID = @ConferenceParticipantID)
     BEGIN
       RAISERROR ('Conference participant ID does not exist', 0, 0)
-      
+
       RETURN
     END
 end
@@ -335,28 +335,28 @@ BEGIN
   IF @SeatsReserved < 0
     BEGIN
       RAISERROR ('Reservation for zero seats does not make sense', 0, 0)
-      
+
       RETURN
     END
 
   IF NOT EXISTS(SELECT * FROM Seminar WHERE Seminar.SeminarID = @SeminarID)
     BEGIN
       RAISERROR ('Seminar ID does not exist', 0, 0)
-      
+
       RETURN
     END
 
   IF @SeatsReserved > dbo.GetFreeSeatsBySeminarID(@SeminarID)
     BEGIN
       RAISERROR ('Not enough free seats to make a reservation', 0, 0)
-      
+
       RETURN
     END
 
   IF NOT EXISTS(SELECT * FROM Reservations WHERE Reservations.ReservationID = @ReservationID)
     BEGIN
       RAISERROR ('Conference reservation ID does not exist', 0, 0)
-      
+
       RETURN
     END
 
@@ -384,21 +384,21 @@ BEGIN
   IF @FirstName = ''
     BEGIN
       RAISERROR ('First name cannot be empty string', 0, 0)
-      
+
       RETURN
     end
 
   IF @LastName = ''
     BEGIN
       RAISERROR ('Last name cannot be empty string', 0, 0)
-      
+
       RETURN
     end
 
   IF NOT EXISTS(SELECT * FROM Customers WHERE Customers.CustomerID = @CustomerID)
     BEGIN
       RAISERROR ('Customer ID does not exist', 0, 0)
-      
+
       RETURN
     END
 
@@ -414,7 +414,7 @@ BEGIN
   IF NOT EXISTS(SELECT * FROM Attendats WHERE Attendants.AttendantID = @AttendantID)
     BEGIN
       RAISERROR ('Attendant ID does not exist', 0, 0)
-      
+
       RETURN
     END
 
@@ -445,6 +445,212 @@ CREATE OR ALTER VIEW BestCustomersView AS
 SELECT Customers.*, customer_count.NumOfReservations
 FROM Customers
        JOIN CustomersReservationCount customer_count ON customer_count.CustomerID = Customers.CustomerID
+GO
+
+-- Change number od seats at conference day
+CREATE OR ALTER PROCEDURE ChangeSeatsConferenceDay @ConferenceDayID INT, @NewSeats INT
+AS
+BEGIN
+
+  IF NOT EXISTS(SELECT * FROM ConferenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
+    BEGIN
+      RAISERROR ('Conference day ID does not exist', 0, 0)
+      RETURN
+    END
+
+  IF @NewSeats < 0
+    BEGIN
+      RAISERROR ('Negative number of seats does not make sense', 0, 0)
+      RETURN
+    END
+
+  DECLARE @current_seats AS INT
+  SET @current_seats = (SELECT Seats FROM ConfrenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
+  DECLARE @diff AS INT
+  SET @diff = @NewSeats - @current_seats
+
+  IF dbo.GetFreeSeatsByConferenceDayID(@ConferenceDayID) < (@diff * -1)
+    BEGIN
+      RAISERROR ('Cannot remove already reserved seats', 0, 0)
+      RETURN
+    END
+
+  UPDATE ConferenceDay SET Seats = @NewSeats WHERE ConferenceDayID = @ConferenceDayID
+end
+GO
+
+-- Change number od seats at conference day
+CREATE OR ALTER PROCEDURE ChangeSeatsSeminar @SeminarID INT, @NewSeats INT
+AS
+BEGIN
+
+  IF NOT EXISTS(SELECT * FROM Seminar WHERE Seminar.SeminarID = @SeminarID)
+    BEGIN
+      RAISERROR ('Seminar ID does not exist', 0, 0)
+      RETURN
+    END
+
+  IF @NewSeats < 0
+    BEGIN
+      RAISERROR ('Negative number of seats does not make sense', 0, 0)
+      RETURN
+    END
+
+  DECLARE @current_seats AS INT
+  SET @current_seats = (SELECT Seats FROM Seminar WHERE Seminar.SeminarID = @SeminarID)
+  DECLARE @diff AS INT
+  SET @diff = @NewSeats - @current_seats
+
+  IF dbo.GetFreeSeatsBySeminarID(@SeminarID) < (@diff * -1)
+    BEGIN
+      RAISERROR ('Cannot remove already reserved seats', 0, 0)
+      RETURN
+    END
+
+  UPDATE Seminar SET Seats = @NewSeats WHERE SeminarID = @SeminarID
+end
+GO
+
+-- Cancel conference
+CREATE OR ALTER PROCEDURE CancelConference @ConferenceID INT
+AS
+BEGIN
+
+  IF NOT EXISTS(SELECT * FROM Conference WHERE Conference.ConferenceID = @ConferenceID)
+    BEGIN
+      RAISERROR ('Conference ID does not exist', 0, 0)
+      RETURN
+    END
+
+  UPDATE Conference SET IsCanceled = 1 WHERE ConferenceID = @ConferenceID
+end
+GO
+
+-- Cancel conference
+CREATE OR ALTER PROCEDURE CancelConferenceDay @ConferenceDayID INT
+AS
+BEGIN
+
+  IF NOT EXISTS(SELECT * FROM ConferenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
+    BEGIN
+      RAISERROR ('Conference day ID does not exist', 0, 0)
+      RETURN
+    END
+
+  UPDATE ConferenceDay SET IsCanceled = 1 WHERE ConferenceDayID = @ConferenceDayID
+end
+GO
+
+-- Cancel seminar
+CREATE OR ALTER PROCEDURE CancelSeminar @SeminarID INT
+AS
+BEGIN
+
+  IF NOT EXISTS(SELECT * FROM Seminar WHERE Seminar.SeminarID = @SeminarID)
+    BEGIN
+      RAISERROR ('Seminar ID does not exist', 0, 0)
+      RETURN
+    END
+
+  UPDATE Seminar SET IsCanceled = 1 WHERE SeminarID = @SeminarID
+end
+GO
+
+-- Cancel reservation
+CREATE OR ALTER PROCEDURE CancelReservation @ReservationID INT
+AS
+BEGIN
+
+  IF NOT EXISTS(SELECT * FROM Reservation WHERE Reservation.ReservationID = @ReservationID)
+    BEGIN
+      RAISERROR ('Reservation ID does not exist', 0, 0)
+      RETURN
+    END
+
+  UPDATE Reservation SET IsCanceled = 1 WHERE ReservationID = @ReservationID
+end
+GO
+
+-- Cancel seminar reservation
+CREATE OR ALTER PROCEDURE CancelSeminarReservation @SeminarReservationID INT
+AS
+BEGIN
+
+  IF NOT EXISTS(SELECT * FROM SeminarReservation WHERE SeminarReservation.SeminarReservationID = @SeminarReservationID)
+    BEGIN
+      RAISERROR ('Seminar Reservation ID does not exist', 0, 0)
+      RETURN
+    END
+
+  UPDATE SeminarReservation SET IsCanceled = 1 WHERE SeminarReservationID = @SeminarReservationID
+end
+GO
+
+-- Update conference day on conference update
+CREATE OR ALTER TRIGGER CancelConferenceDayOnConferenceCancelation
+  ON Conference
+  AFTER UPDATE
+  AS
+  UPDATE ConferenceDay
+  SET ConferenceDay.IsCanceled = (ConferenceDay.IsCanceled | Conference.IsCanceled)
+  FROM ConferenceDay
+         LEFT JOIN Conference ON ConferenceDay.ConferenceID = Conference.ConferenceID
+GO
+
+-- Update reservations on conference day update
+CREATE OR ALTER TRIGGER CancelReservationOnConferenceDayCancelation
+  ON ConferenceDay
+  AFTER UPDATE
+  AS
+  UPDATE Reservations
+  SET Reservations.IsCanceled = (Reservations.IsCanceled | ConferenceDay.IsCanceled)
+  FROM Reservations
+         LEFT JOIN ConferenceDay ON Reservations.ConferenceDayID = ConferenceDay.ConferenceDayID
+GO
+
+-- Update seminar on conference update
+CREATE OR ALTER TRIGGER CancelSeminarOnConferenceDayCancelation
+  ON ConferenceDay
+  AFTER UPDATE
+  AS
+  UPDATE Seminar
+  SET Seminar.IsCanceled = (Seminar.IsCanceled | ConferenceDay.IsCanceled)
+  FROM Seminar
+         LEFT JOIN ConferenceDay ON Seminar.ConferenceDayID = ConferenceDay.ConferenceDayID
+GO
+
+-- Update seminar reservation on seminar update
+CREATE OR ALTER TRIGGER CancelSeminarReservationOnSeminarCancelation
+  ON Seminar
+  AFTER UPDATE
+  AS
+  UPDATE SeminarReservation
+  SET SeminarReservation.IsCanceled = (SeminarReservation.IsCanceled | Seminar.IsCanceled)
+  FROM SeminarReservation
+         LEFT JOIN Seminar ON SeminarReservation.SeminarID = Seminar.SeminarID
+GO
+
+-- Update seminar participants on seminar reservation update
+CREATE OR ALTER TRIGGER CancelSeminarParticipantOnSeminarReservationCancelation
+  ON SeminarReservations
+  AFTER UPDATE
+  AS
+  UPDATE SeminarParticipant
+  SET SeminarParticipant.IsCanceled = (SeminarParticipant.IsCanceled | SeminarReservations.IsCanceled)
+  FROM SeminarParticipant
+         LEFT JOIN SeminarReservations
+                   ON SeminarParticipant.SeminarReservationID = SeminarReservations.SeminarReservationID
+GO
+
+-- Update participants on reservation update
+CREATE OR ALTER TRIGGER CancelParticipantOnReservationCancelation
+  ON Reservations
+  AFTER UPDATE
+  AS
+  UPDATE Participant
+  SET Participant.IsCanceled = (Participant.IsCanceled | Reservations.IsCanceled)
+  FROM Participant
+         LEFT JOIN Reservations ON Participant.ReservationID = Reservations.ReservationID
 GO
 
 EXEC AddConferenceWithEndDate @Topic = 'Nuddyyyy', @StartDate = '2013-01-01', @EndDate = '2013-02-01', @Address = null,
