@@ -46,7 +46,7 @@ CREATE TABLE ConferenceParticipants (
 CREATE TABLE Customers (
     CustomerID int NOT NULL IDENTITY(1,1),
     Name varchar(50) NOT NULL,
-    Email int NOT NULL CHECK(Email LIKE '_*@_*._*'),
+    Email varchar(50) NOT NULL CHECK(Email LIKE '_*@_*._*'),
     Phone int NOT NULL CHECK(Phone BETWEEN 100000000 and 999999999),
     CONSTRAINT Customers_pk PRIMARY KEY (CustomerID)
 );
