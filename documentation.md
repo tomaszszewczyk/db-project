@@ -1027,6 +1027,38 @@ CREATE OR ALTER TRIGGER CancelParticipantOnReservationCancelation
 GO
 ```
 
+## Trigger *seminar_participant_check*
+Wyzwawacz zapewniający, że nie da się zapisać na warsztat uczestnika który w tym samym czasie uczestniczy w innym warsztacie
+
+```SQL
+Create trigger seminar_participant_check
+  ON SeminarParticipants
+  AFTER INSERT, UPDATE AS
+  BEGIN
+    IF (SELECT * FROM SeminarParticipants WHERE dbo.GetSeminarID(SeminarReservationID) IN (dbo.overlapping_seminar(dbo.GetSeminarID(SeminarReservationID))))
+    BEGIN
+    RAISERROR ('Participant is already signed up for seminar in that time', 16, 1);
+  ROLLBACK TRANSACTION
+  END
+  end
+```
+
+## Trigger *unpaid_reservation*
+Wyzwawacz zapewniający, że dostaniemy informację o rezerwacjach których termin płatności upłynął
+
+```SQL
+Create trigger unpaid_reservation
+  ON Reservations
+  AFTER INSERT, UPDATE AS
+  begin
+    if exists(SELECT SUM(Amount) FROM Payments GROUP BY ReservationID HAVING Sum(Amount)<get_total_cost(ReservationID))
+    BEGIN
+      RAISERROR('One of the reservations was not paid in time', 0, 0);
+    end
+  end
+  go
+```
+
 # Procedury
 
 ## Procedura *AddConferenceWithEndDate*
