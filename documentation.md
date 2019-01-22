@@ -28,9 +28,9 @@ Tabela opisująca uczestników wydarzenia. Każdy wiersz opisuje jedną fizyczn�
 | Kolumna | Typ | Opis |
 |---------|-----|------|
 | AttendantID | int NOT NULL | Unikalny identyfikator uczestnika |
-| FirstName | varchar(20) NOT NULL | Imie uczestnika |
+| FirstName | varchar(20) NOT NULL | Imię uczestnika |
 | LastName | varchar(40) NOT NULL | Nazwisko uczestnika |
-| CustomerID | int NOT NULL | Unikalny identyfikator klienta do którego przypisany jest uczestnik |
+| CustomerID | int NOT NULL | Unikalny identyfikator klienta, do którego przypisany jest uczestnik |
 
 ```SQL
 CREATE TABLE Attendants
@@ -76,7 +76,7 @@ Tabela opisująca poszczególne dnie konferecji.
 | Date | date NOT NULL | Data wskazująca na dzień konferecji |
 | Seats | int NOT NULL | Suma ogółu miejsc podczas dnia konferencji |
 | Price | numeric(6,2) NOT NULL | Cena danego dnia konferecji |
-| ConferenceID | int NOT NULL | Unikalny identyfikator konferecji do której należy dzień konferencji|
+| ConferenceID | int NOT NULL | Unikalny identyfikator konferecji, do której należy dzień konferencji|
 
 ```SQL
 CREATE TABLE ConferenceDay
@@ -142,7 +142,7 @@ Tabela reprezentująca dostępne zniżki.
 | MaxOutrunning | int NOT NULL | Maksymalne wyprzedzenie |
 | Discount | decimal(4,2) NOT NULL | Wielkość zniżki |
 | StudentDiscount | decimal(4,2) NOT NULL | Wielkość zniżki dla studentów |
-| ConferenceID | int NOT NULL | Unikalny indentyfikator konferencji dla której obowiązują zniżki |
+| ConferenceID | int NOT NULL | Unikalny indentyfikator konferencji, dla której obowiązują zniżki |
 
 ```SQL
 CREATE TABLE Discounts
@@ -164,7 +164,7 @@ Tabela przechowująca zaksięgowane płatności.
 |---------|-----|------|
 | PaymentID | int NOT NULL | Unikalny indentyfikator zaksięgowanej płatności |
 | Amount | numeric(6,2) NOT NULL | Kwota zaksięgowanej płatności |
-| ReservationsID | int NOT NULL | Unikalny indentyfikator rezerwacji dla której dokonano płatności | 
+| ReservationsID | int NOT NULL | Unikalny indentyfikator rezerwacji, dla której dokonano płatności | 
 
 ```SQL
 CREATE TABLE Payments
@@ -187,7 +187,7 @@ Tabela przechowująca wykonanae rezerwacje.
 | PaymentDate | date NULL | Ostateczna data płatności |
 | CustomerID | int NOT NULL | Unikalny indentyfikator klienta |
 | SeatsReserved | int NOT NULL | Ilość zarezerwowanych miejsc |
-| ConferenceDayID | int NOT NULL | Unikalny indentyfikator dnia na który wykonano rezerwację |
+| ConferenceDayID | int NOT NULL | Unikalny indentyfikator dnia, na który wykonano rezerwację |
 
 ```SQL
 CREATE TABLE Reservations
@@ -213,7 +213,7 @@ Tabela przechowująca warsztaty
 | Price | numeric(6,2) NULL | Cena warsztatu |
 | StartTime | time NOT NULL | Godzina rozpoczęcia warsztatu |
 | EndTime | time NOT NULL | Godzina końca warsztatu |
-| ConferenceDayID | int NOT NULL | Unikalny indentyfikator dnia w którym odbywa się warsztat | 
+| ConferenceDayID | int NOT NULL | Unikalny indentyfikator dnia, w którym odbywa się warsztat | 
 
 ```SQL
 CREATE TABLE Seminar
@@ -698,7 +698,7 @@ TODO
 # Triggery
 
 ## Trigger *CancelConferenceDayOnConferenceCancelation*
-Wyzwawacz zapewniający, że dzień konferencji należący do konferencji która jest anulowana również zostanie anulowany.
+Wyzwawacz zapewniający, że dzień konferencji należący do konferencji, która jest anulowana, również zostanie anulowany.
 
 ```SQL
 CREATE OR ALTER TRIGGER CancelConferenceDayOnConferenceCancelation
@@ -713,7 +713,7 @@ GO
 ```
 
 ## Trigger *CancelReservationOnConferenceDayCancelation*
-Wyzwawacz zapewniający, że rezerwacja należąca do dnia konferencji który jest anulowany również zostanie anulowana.
+Wyzwawacz zapewniający, że rezerwacja należąca do dnia konferencji, który jest anulowany, również zostanie anulowana.
 
 ```SQL
 CREATE OR ALTER TRIGGER CancelReservationOnConferenceDayCancelation
@@ -728,7 +728,7 @@ GO
 ```
 
 ## Trigger *CancelSeminarOnConferenceDayCancelation*
-Wyzwawacz zapewniający, że warsztat należący do dnia konferencji, który jest anulowany różwnież zostanie anulowany.
+Wyzwawacz zapewniający, że warsztat należący do dnia konferencji, który jest anulowany, różwnież zostanie anulowany.
 
 ```SQL
 CREATE OR ALTER TRIGGER CancelSeminarOnConferenceDayCancelation
@@ -743,7 +743,7 @@ GO
 ```
 
 ## Trigger *CancelSeminarReservationOnSeminarCancelation*
-Wyzwawacz zapewniający, że rezerwacja na warsztat, który został anulowany również zostanie anulowana.
+Wyzwawacz zapewniający, że rezerwacja na warsztat, który został anulowany, również zostanie anulowana.
 
 ```SQL
 CREATE OR ALTER TRIGGER CancelSeminarReservationOnSeminarCancelation
@@ -758,7 +758,7 @@ GO
 ```
 
 ## Trigger *CancelSeminarParticipantOnSeminarReservationCancelation*
-Wyzwawacz zapewniający, że uczestnicy warsztatu, który został anulowany również zostaną anulowani.
+Wyzwawacz zapewniający, że uczestnicy warsztatu, który został anulowany, również zostaną anulowani.
 
 ```SQL
 CREATE OR ALTER TRIGGER CancelSeminarParticipantOnSeminarReservationCancelation
@@ -774,7 +774,7 @@ GO
 ```
 
 ## Trigger *CancelParticipantOnReservationCancelation*
-Wyzwawacz zapewniający, że uczestnicy dnia konferencji, który został anulowany również zostaną anulowani.
+Wyzwawacz zapewniający, że uczestnicy dnia konferencji, który został anulowany, również zostaną anulowani.
 
 ```SQL
 CREATE OR ALTER TRIGGER CancelParticipantOnReservationCancelation
