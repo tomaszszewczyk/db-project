@@ -1,18 +1,18 @@
-CREATE OR ALTER VIEW all_conferences AS (SELECT *
+CREATE OR ALTER VIEW AllConferencesView AS (SELECT *
                                          from Conference)
 GO
 
-CREATE OR ALTER VIEW upcoming_conferences AS
+CREATE OR ALTER VIEW UpcomingConferencesView AS
 SELECT *
 from Conference
 WHERE DATEDIFF(month, GETDATE(), StartDate) BETWEEN 0 AND 3 -- Shows conferences starting within 3 months of current date
 GO
 
-CREATE OR ALTER VIEW reservations_not_paid AS
-SELECT SUM(Amount) AS Paid, dbo.get_total_cost(ReservationsID) AS Cost, ReservationsID AS ReservationID
+CREATE OR ALTER VIEW NotPaitReservationView AS
+SELECT SUM(Amount) AS Paid, dbo.GetConferenceReservationCost(ReservationsID) AS Cost, ReservationsID AS ReservationID
 from Payments
 GROUP BY ReservationsID
-HAVING (SUM(Amount) < dbo.get_total_cost(ReservationsID))
+HAVING (SUM(Amount) < dbo.GetConferenceReservationCost(ReservationsID))
 GO
 
 -- View reservations without attendants assigned
@@ -127,4 +127,28 @@ CREATE OR ALTER FUNCTION ReservationWithinConferenceDayView(@ConferenceDayReserv
   AS RETURN SELECT *
             FROM SeminarReservations
             WHERE SeminarReservations.ReservationID = @ConferenceDayReservationID
+GO
+
+-- View conference day list
+CREATE OR ALTER function ConferenceDayListView(@DayID int)
+  RETURNS TABLE
+    AS RETURN
+    SELECT DISTINCT FirstName, LastName
+    from Attendants
+           JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID = Attendants.AttendantID
+           JOIN Reservations on ConferenceParticipants.ReservationsID = Reservations.ReservationID
+    WHERE @DayID = Reservations.ConferenceDayID
+GO
+
+-- View seminar day list
+CREATE OR ALTER function SeminarDayListView(@SeminarID int)
+  RETURNS TABLE
+    AS RETURN
+    SELECT DISTINCT FirstName, LastName
+    from Attendants
+           JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID = Attendants.AttendantID
+           JOIN SeminarParticipants
+                on ConferenceParticipants.ConferenceParticipantID = SeminarParticipants.ConferenceParticipantID
+           JOIN SeminarReservations SR on SeminarParticipants.SeminarReservationID = SR.SeminarReservationID
+    WHERE @SeminarID = SeminarID
 GO

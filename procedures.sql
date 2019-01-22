@@ -564,16 +564,3 @@ CREATE OR ALTER TRIGGER CancelParticipantOnReservationCancelation
   FROM Participant
          LEFT JOIN Reservations ON Participant.ReservationID = Reservations.ReservationID
 GO
-
-EXEC AddConference @Topic = 'Dupa', @StartDate = '2020/01/01', @Address = 'Somewhere', @DefaultPrice = 10.50, @DefaultSeats = 10
-EXEC AddConferenceWithEndDate @Topic = 'Inna dupa', @StartDate = '2020/01/01', @EndDate = '2020/02/01', @Address = 'Somewhere', @DefaultPrice = 10.50, @DefaultSeats = 10
-EXEC AddConferenceWithEndDate @Topic = 'Testowa konferencja', @StartDate = '2020/01/01', @EndDate = '2020/01/05', @Address = 'Somewhere', @DefaultPrice = 10.50, @DefaultSeats = 10
-
-EXEC AddSeminar @Seats = 10, @Price = 0, @StartTime = '10:00', @EndTime = '11:00', @ConferenceDayID = 1
-EXEC AddSeminar @Seats = 10, @Price = 0, @StartTime = '10:00', @EndTime = '11:00', @ConferenceDayID = 34
-EXEC AddSeminar @Seats = 10, @Price = 0, @StartTime = '10:00', @EndTime = '11:00', @ConferenceDayID = 35
-
-EXEC AddCustomer @Name = 'Tomek', @Email = 'tomek@tomek.com', @Phone = '321123321'
-
-EXEC AddReservation @CustomerID = 1, @SeatsReserved = 1, @ConferenceDayID = 1
-EXEC AddPayment @Amount = 10.50, @ReservationsID = 1
