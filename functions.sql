@@ -91,39 +91,44 @@ GO
 
 CREATE OR ALTER FUNCTION is_student_customer(@CustomerID int)
   returns bit
-    AS
-    BEGIN
-        IF((SELECT COUNT(AttendantID) FROM Attendants GROUP BY CustomerID HAVING CustomerID=@CustomerID)>1)
-      BEGIN
-          return 0
-      end
-      else
-      DECLARE @AttendantID INT = (SELECT MAX(AttendantID) FROM Attendants Group BY CustomerID HAVING CustomerID=@CustomerID)
-      if EXISTS(SELECT * FROM Students WHERE AttendantID=@AttendantID)
-      BEGIN
-        RETURN 1
-      end
-      ELSE return 0;
-      return 0;
-    end
-
-Create OR ALTER function get_total_cost(@Reservation int)
-RETURNS INT
 AS
-  BEGIN
-    DECLARE @CustomerID int = (SELECT CustomerID FROM Reservations WHERE ReservationID=@Reservation)
-    DECLARE @seminar int = (SELECT SUM(dbo.get_seminar_reservation_cost(SeminarReservationID)) FROM SeminarReservations WHERE ReservationID=@Reservation)
-    DECLARE @conference int = dbo.get_conference_reservation_cost(ReservationID)
-    RETURN @seminar+@conference
-  END;
+BEGIN
+  IF ((SELECT COUNT(AttendantID) FROM Attendants GROUP BY CustomerID HAVING CustomerID = @CustomerID) > 1)
+    BEGIN
+      return 0
+    end
+  else
+    DECLARE @AttendantID INT = (SELECT MAX(AttendantID)
+                                FROM Attendants
+                                Group BY CustomerID
+                                HAVING CustomerID = @CustomerID)
+  if EXISTS(SELECT * FROM Students WHERE AttendantID = @AttendantID)
+    BEGIN
+      RETURN 1
+    END
+
+  RETURN 0;
+end
+GO
 
 CREATE OR ALTER function conference_day_list(@DayID int)
-RETURNS TABLE
-AS RETURN
-  SELECT DISTINCT FirstName, LastName from Attendants JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID=Attendants.AttendantID JOIN Reservations on ConferenceParticipants.ReservationsID = Reservations.ReservationID WHERE @DayID=Reservations.ConferenceDayID
-
+  RETURNS TABLE
+    AS RETURN
+    SELECT DISTINCT FirstName, LastName
+    from Attendants
+           JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID = Attendants.AttendantID
+           JOIN Reservations on ConferenceParticipants.ReservationsID = Reservations.ReservationID
+    WHERE @DayID = Reservations.ConferenceDayID
+GO
 
 CREATE OR ALTER function seminar_day_list(@SeminarID int)
-RETURNS TABLE
-AS RETURN
-  SELECT DISTINCT FirstName, LastName from Attendants JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID=Attendants.AttendantID JOIN SeminarParticipants on ConferenceParticipants.ConferenceParticipantID = SeminarParticipants.ConferenceParticipantID JOIN SeminarReservations SR on SeminarParticipants.SeminarReservationID = SR.SeminarReservationID WHERE @SeminarID=SeminarID
+  RETURNS TABLE
+    AS RETURN
+    SELECT DISTINCT FirstName, LastName
+    from Attendants
+           JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID = Attendants.AttendantID
+           JOIN SeminarParticipants
+                on ConferenceParticipants.ConferenceParticipantID = SeminarParticipants.ConferenceParticipantID
+           JOIN SeminarReservations SR on SeminarParticipants.SeminarReservationID = SR.SeminarReservationID
+    WHERE @SeminarID = SeminarID
+GO
