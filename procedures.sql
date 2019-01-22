@@ -577,6 +577,3 @@ EXEC AddCustomer @Name = 'Tomek', @Email = 'tomek@tomek.com', @Phone = '32112332
 
 EXEC AddReservation @CustomerID = 1, @SeatsReserved = 1, @ConferenceDayID = 1
 EXEC AddPayment @Amount = 10.50, @ReservationsID = 1
-
-SELECT * FROM Conference
-SELECT * FROM ConferenceDay

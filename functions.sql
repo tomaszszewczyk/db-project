@@ -113,16 +113,17 @@ AS
   BEGIN
     DECLARE @CustomerID int = (SELECT CustomerID FROM Reservations WHERE ReservationID=@Reservation)
     DECLARE @seminar int = (SELECT SUM(dbo.get_seminar_reservation_cost(SeminarReservationID)) FROM SeminarReservations WHERE ReservationID=@Reservation)
-    DECLARE @conference int = (SELECT SUM(dbo.get_conference_reservation_cost(ReservationID)) FROM Reservations WHERE ReservationID=@Reservation)
-    DECLARE @discount int
-        IF(dbo.is_student_customer(@CustomerID)=1)
-        BEGIN
-        SET @discount = (SELECT StudentDiscount FROM dbo.get_discount_table(dbo.get_conference(dbo.get_conference_day(@Reservation))))
-        end
-        ELSE
-          BEGIN
-        SET @discount = (SELECT Discount FROM dbo.get_discount_table(dbo.get_conference(dbo.get_conference_day(@Reservation))))
-          end
-      RETURN (@seminar+@conference)*(1-@discount)
-  END
-go
+    DECLARE @conference int = dbo.get_conference_reservation_cost(ReservationID)
+    RETURN @seminar+@conference
+  END;
+
+CREATE OR ALTER function conference_day_list(@DayID int)
+RETURNS TABLE
+AS RETURN
+  SELECT DISTINCT FirstName, LastName from Attendants JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID=Attendants.AttendantID JOIN Reservations on ConferenceParticipants.ReservationsID = Reservations.ReservationID WHERE @DayID=Reservations.ConferenceDayID
+
+
+CREATE OR ALTER function seminar_day_list(@SeminarID int)
+RETURNS TABLE
+AS RETURN
+  SELECT DISTINCT FirstName, LastName from Attendants JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID=Attendants.AttendantID JOIN SeminarParticipants on ConferenceParticipants.ConferenceParticipantID = SeminarParticipants.ConferenceParticipantID JOIN SeminarReservations SR on SeminarParticipants.SeminarReservationID = SR.SeminarReservationID WHERE @SeminarID=SeminarID
