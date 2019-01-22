@@ -3,6 +3,10 @@
 ## Dokumentacja
 **Tomasz Szewczyk, Mateusz Szwed**
 
+# Spis treści
+
+TODO
+
 # System zarządzania konferecjami
 
 ## Opis problemu
@@ -449,7 +453,243 @@ ALTER TABLE SeminarReservations
 
 # Widoki
 
-TODO
+## Widok *AllConferencesView*
+Pokaż wszystkie konferencje w systemie.
+
+``` SQL
+CREATE OR ALTER VIEW AllConferencesView AS (SELECT *
+                                         from Conference)
+GO
+```
+
+## Widok *UpcomingConferencesView*
+Pokaż nadchodzące konferencje.
+
+``` SQL
+CREATE OR ALTER VIEW UpcomingConferencesView AS
+SELECT *
+from Conference
+WHERE DATEDIFF(month, GETDATE(), StartDate) BETWEEN 0 AND 3 
+GO
+```
+
+## Widok *NotPaitReservationView*
+Pokaż niezapłacone rezerwacje.
+
+``` SQL
+CREATE OR ALTER VIEW NotPaitReservationView AS
+SELECT SUM(Amount) AS Paid, dbo.GetConferenceReservationCost(ReservationsID) AS Cost, ReservationsID AS ReservationID
+from Payments
+GROUP BY ReservationsID
+HAVING (SUM(Amount) < dbo.GetConferenceReservationCost(ReservationsID))
+GO
+```
+
+## Widok *ReservationsWithoutAttendants*
+Pokaż rezerwacje dla których nie wypełniono daych uczestnika.
+
+``` SQL
+CREATE OR ALTER VIEW ReservationsWithoutAttendants AS
+SELECT Conference.Topic, Customers.*
+FROM ConferenceParticipants
+       LEFT JOIN Reservations ON Reservations.ReservationID = ConferenceParticipants.ReservationsID
+       LEFT JOIN ConferenceDay ON ConferenceDay.ConferenceDayID = Reservations.ConferenceDayID
+       LEFT JOIN Conference ON Conference.ConferenceID = ConferenceDay.ConferenceID
+       LEFT JOIN Customers ON Customers.CustomerID = Reservations.CustomerID
+WHERE ConferenceParticipants.AttendantID IS NULL
+GO
+```
+
+## Widok *CustomersReservationCount*
+Pokaż ilość rezerwacji dla każdego klienta.
+
+``` SQL
+CREATE OR ALTER VIEW CustomersReservationCount AS
+SELECT Customers.CustomerID, COUNT(*) AS NumOfReservations
+FROM Customers
+       JOIN Reservations ON Reservations.CustomerID = Customers.CustomerID
+GROUP BY Customers.CustomerID
+GO
+```
+
+## Widok *BestCustomersView*
+Pokaż najlepszych klientów.
+
+``` SQL
+CREATE OR ALTER VIEW BestCustomersView AS
+SELECT Customers.*, customer_count.NumOfReservations
+FROM Customers
+       JOIN CustomersReservationCount customer_count ON customer_count.CustomerID = Customers.CustomerID
+GO
+```
+
+## Widok *ConferenceDayView*
+Pokaż dni konferencji.
+
+``` SQL
+CREATE OR ALTER VIEW ConferenceDayView AS
+SELECT *
+FROM ConferenceDay
+GO
+```
+
+## Widok (funkcja) *DaysWithinConferenceView*
+Pokaż dni w danej konferencji.
+
+``` SQL
+CREATE OR ALTER FUNCTION DaysWithinConferenceView(@ConferenceID INT) RETURNS TABLE
+  AS RETURN SELECT *
+            FROM ConferenceDay
+            WHERE ConferenceDay.ConferenceID = @ConferenceID
+GO
+```
+
+## Widok *DiscountsView*
+Pokaż zniżki.
+
+``` SQL
+CREATE OR ALTER VIEW DiscountsView AS
+SELECT *
+FROM Discounts
+GO
+```
+
+## Widok (funkcja) *DiscountsWithinConferenceView*
+Pokaż zniżki dla danej konferencji.
+
+``` SQL
+CREATE OR ALTER FUNCTION DiscountsWithinConferenceView(@ConferenceID INT) RETURNS TABLE
+  AS RETURN SELECT *
+            FROM Discounts
+            WHERE Discounts.ConferenceID = @ConferenceID
+GO
+```
+
+## Widok *SeminarView*
+Pokaż warsztaty
+
+``` SQL
+CREATE OR ALTER VIEW SeminarView AS
+SELECT *
+FROM Seminar
+GO
+```
+
+## Widok (funkcja) *SeminarWithinConferenceDayView*
+Pokaż warsztaty w danym dniu konferencji.
+
+``` SQL
+CREATE OR ALTER FUNCTION SeminarWithinConferenceDayView(@ConferenceDayID INT) RETURNS TABLE
+  AS RETURN SELECT *
+            FROM Seminar
+            WHERE Seminar.ConferenceDayID = @ConferenceDayID
+GO
+```
+
+## Widok (funkcja) *SeminarWithinConferenceView*
+Pokaż warsztaty w danej konferencji.
+
+``` SQL
+CREATE OR ALTER FUNCTION SeminarWithinConferenceView(@Conference INT) RETURNS TABLE
+  AS RETURN
+  SELECT Seminar.*
+  FROM Seminar
+         LEFT JOIN ConferenceDay ON Seminar.ConferenceDayID = ConferenceDay.ConferenceDayID
+  WHERE ConferenceDay.ConferenceID = @Conference
+GO
+```
+
+## Widok *ReservationsView*
+Pokaż rezerwacje.
+
+``` SQL
+CREATE OR ALTER VIEW ReservationsView AS
+SELECT *,
+       dbo.GetConferenceReservationCost(Reservations.ReservationID) AS Total,
+       dbo.GetReservationPaid(Reservations.ReservationID)           AS Paid
+FROM Reservations
+GO
+```
+
+## Widok (funkcja) *ReservationWithinConferenceDayView*
+Pokaż rezerwacje na dany dzień.
+
+``` SQL
+CREATE OR ALTER FUNCTION ReservationWithinConferenceDayView(@ConferenceDayID INT) RETURNS TABLE
+  AS RETURN SELECT *,
+                   dbo.GetConferenceReservationCost(Reservations.ReservationID) AS Total,
+                   dbo.GetReservationPaid(Reservations.ReservationID)           AS Paid
+            FROM Reservations
+            WHERE Reservations.ConferenceDayID = @ConferenceDayID
+GO
+```
+
+## Widok *DuePaidReservationView*
+Pokaż niezapłacone rezerwacje.
+
+``` SQL
+CREATE OR ALTER VIEW DuePaidReservationView
+AS
+SELECT *,
+       dbo.GetConferenceReservationCost(Reservations.ReservationID) AS Total,
+       dbo.GetReservationPaid(Reservations.ReservationID)           AS Paid
+FROM Reservations
+WHERE dbo.GetConferenceReservationCost(Reservations.ReservationID) > dbo.GetReservationPaid(Reservations.ReservationID)
+GO
+```
+
+## Widok *ReservationsView*
+Pokaż rezerwacje.
+
+``` SQL
+CREATE OR ALTER VIEW ReservationsView AS
+SELECT *
+FROM SeminarReservations
+GO
+```
+
+## Widok (funkcja) *ReservationWithinConferenceDayView*
+Pokaż rezerwacje na dany dzień.
+
+``` SQL
+CREATE OR ALTER FUNCTION ReservationWithinConferenceDayView(@ConferenceDayReservationID INT) RETURNS TABLE
+  AS RETURN SELECT *
+            FROM SeminarReservations
+            WHERE SeminarReservations.ReservationID = @ConferenceDayReservationID
+GO
+```
+
+## Widok (funkcja) *ConferenceDayListView*
+Pokaż podsumowanie dnia.
+
+``` SQL
+CREATE OR ALTER function ConferenceDayListView(@DayID int)
+  RETURNS TABLE
+    AS RETURN
+    SELECT DISTINCT FirstName, LastName
+    from Attendants
+           JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID = Attendants.AttendantID
+           JOIN Reservations on ConferenceParticipants.ReservationsID = Reservations.ReservationID
+    WHERE @DayID = Reservations.ConferenceDayID
+GO
+```
+
+## Widok (funkcja) *SeminarDayListView*
+Pokaż podsumowanie warsztatu.
+
+``` SQL
+CREATE OR ALTER function SeminarDayListView(@SeminarID int)
+  RETURNS TABLE
+    AS RETURN
+    SELECT DISTINCT FirstName, LastName
+    from Attendants
+           JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID = Attendants.AttendantID
+           JOIN SeminarParticipants
+                on ConferenceParticipants.ConferenceParticipantID = SeminarParticipants.ConferenceParticipantID
+           JOIN SeminarReservations SR on SeminarParticipants.SeminarReservationID = SR.SeminarReservationID
+    WHERE @SeminarID = SeminarID
+GO
+```
 
 # Funkcje
 
