@@ -32,7 +32,7 @@ BEGIN
 END
 GO
 
--- Add conference procedure
+-- Add one day conference procedure
 CREATE OR ALTER PROCEDURE AddConference @Topic TEXT, @StartDate DATE, @Address TEXT, @DefaultPrice NUMERIC(6, 2),
                                         @DefaultSeats INT
 AS
@@ -43,28 +43,6 @@ EXEC AddConferenceWithEndDate
      @Address = @Address,
      @DefaultPrice = @DefaultPrice,
      @DefaultSeats = @DefaultSeats
-GO
-
--- Get conference start date by conference ID
-CREATE OR ALTER FUNCTION GetConferenceStartDate(@ConferenceID INT)
-  RETURNS DATE
-AS
-BEGIN
-  DECLARE @result as DATE
-  SET @result = (SELECT StartDate FROM Conference WHERE Conference.ConferenceID = @ConferenceID)
-  RETURN @result
-END
-GO
-
--- Get conference end date by conference ID
-CREATE OR ALTER FUNCTION GetConferenceEndDate(@ConferenceID INT)
-  RETURNS DATE
-AS
-BEGIN
-  DECLARE @result as DATE
-  SET @result = (SELECT EndDate FROM Conference WHERE Conference.ConferenceID = @ConferenceID)
-  RETURN @result
-END
 GO
 
 -- Adds new conference day
@@ -144,47 +122,6 @@ BEGIN
 
   INSERT INTO Seminar(Seats, Price, StartTime, EndTime, ConferenceDayID)
   VALUES (@Seats, @Price, @StartTime, @EndTime, @ConferenceDayID)
-END
-GO
-
--- Get available seats by conference day ID
-CREATE OR ALTER FUNCTION GetFreeSeatsByConferenceDayID(@ConferenceDayID INT)
-  RETURNS INT
-AS
-BEGIN
-
-  DECLARE @all_seats_at_conference AS INT
-  DECLARE @already_taken_seats AS INT
-  DECLARE @result AS INT
-  SET @all_seats_at_conference =
-      (SELECT Seats FROM ConferenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
-  SET @already_taken_seats =
-      (SELECT SUM(SeatsReserved)
-       FROM Reservations
-       WHERE Reservations.ConferenceDayID = @ConferenceDayID
-       GROUP BY Reservations.ConferenceDayID)
-  SET @result = @all_seats_at_conference - @already_taken_seats
-  RETURN @result
-END
-GO
-
--- Get available seats by conference day ID
-CREATE OR ALTER FUNCTION GetFreeSeatsBySeminarID(@SeminarID INT)
-  RETURNS INT
-AS
-BEGIN
-
-  DECLARE @all_seats_at_seminar AS INT
-  DECLARE @already_taken_seats AS INT
-  DECLARE @result AS INT
-  SET @all_seats_at_seminar = (SELECT Seats FROM Seminar WHERE Seminar.SeminarID = @SeminarID)
-  SET @already_taken_seats =
-      (SELECT SUM(SeatsReserved)
-       FROM SeminarReservations
-       WHERE SeminarReservations.SeminarID = @SeminarID
-       GROUP BY SeminarReservations.SeminarID)
-  SET @result = @all_seats_at_seminar - @already_taken_seats
-  RETURN @result
 END
 GO
 
@@ -422,31 +359,6 @@ BEGIN
 END
 GO
 
--- View reservations without attendants assigned
-CREATE OR ALTER VIEW ReservationsWithoutAttendants AS
-SELECT Conference.Topic, Customers.*
-FROM ConferenceParticipants
-       LEFT JOIN Reservations ON Reservations.ReservationID = ConferenceParticipants.ReservationsID
-       LEFT JOIN ConferenceDay ON ConferenceDay.ConferenceDayID = Reservations.ConferenceDayID
-       LEFT JOIN Conference ON Conference.ConferenceID = ConferenceDay.ConferenceID
-       LEFT JOIN Customers ON Customers.CustomerID = Reservations.CustomerID
-GO
-
--- View client summary
-CREATE OR ALTER VIEW CustomersReservationCount AS
-SELECT Customers.CustomerID, COUNT(*) AS NumOfReservations
-FROM Customers
-       JOIN Reservations ON Reservations.CustomerID = Customers.CustomerID
-GROUP BY Customers.CustomerID
-GO
-
--- View best customers
-CREATE OR ALTER VIEW BestCustomersView AS
-SELECT Customers.*, customer_count.NumOfReservations
-FROM Customers
-       JOIN CustomersReservationCount customer_count ON customer_count.CustomerID = Customers.CustomerID
-GO
-
 -- Change number od seats at conference day
 CREATE OR ALTER PROCEDURE ChangeSeatsConferenceDay @ConferenceDayID INT, @NewSeats INT
 AS
@@ -653,21 +565,18 @@ CREATE OR ALTER TRIGGER CancelParticipantOnReservationCancelation
          LEFT JOIN Reservations ON Participant.ReservationID = Reservations.ReservationID
 GO
 
-EXEC AddConferenceWithEndDate @Topic = 'Nuddyyyy', @StartDate = '2013-01-01', @EndDate = '2013-02-01', @Address = null,
-     @DefaultPrice = 100, @DefaultSeats = 10
-EXEC AddDiscount @MinOutrunning = 1, @MaxOutrunning = 2, @Discount = 10.00, @StudentDiscount = 20.00,
-     @ConferenceID = 1
-EXEC AddCustomer @Name = 'Tomek', @Email = 'tomek@gmail.com', @Phone = '123321123'
-EXEC AddReservation @CustomerID = 1, @SeatsReserved = 5, @ConferenceDayID = 1
-EXEC AddSeminar @Seats = 100, @Price = 10, @StartTime = '10:00:00', @EndTime = '11:00:00', @ConferenceDayID = 1
-EXEC AddSeminarReservation @ReservationID = 1, @SeatsReserved = 2, @SeminarID = 1
+EXEC AddConference @Topic = 'Dupa', @StartDate = '2020/01/01', @Address = 'Somewhere', @DefaultPrice = 10.50, @DefaultSeats = 10
+EXEC AddConferenceWithEndDate @Topic = 'Inna dupa', @StartDate = '2020/01/01', @EndDate = '2020/02/01', @Address = 'Somewhere', @DefaultPrice = 10.50, @DefaultSeats = 10
+EXEC AddConferenceWithEndDate @Topic = 'Testowa konferencja', @StartDate = '2020/01/01', @EndDate = '2020/01/05', @Address = 'Somewhere', @DefaultPrice = 10.50, @DefaultSeats = 10
 
-SELECT *
-From ReservationsWithoutAttendants
+EXEC AddSeminar @Seats = 10, @Price = 0, @StartTime = '10:00', @EndTime = '11:00', @ConferenceDayID = 1
+EXEC AddSeminar @Seats = 10, @Price = 0, @StartTime = '10:00', @EndTime = '11:00', @ConferenceDayID = 34
+EXEC AddSeminar @Seats = 10, @Price = 0, @StartTime = '10:00', @EndTime = '11:00', @ConferenceDayID = 35
 
-SELECT *
-FROM SeminarReservations
+EXEC AddCustomer @Name = 'Tomek', @Email = 'tomek@tomek.com', @Phone = '321123321'
 
-SELECT *
-FROM BestCustomersView
-ORDER BY NumOfReservations
+EXEC AddReservation @CustomerID = 1, @SeatsReserved = 1, @ConferenceDayID = 1
+EXEC AddPayment @Amount = 10.50, @ReservationsID = 1
+
+SELECT * FROM Conference
+SELECT * FROM ConferenceDay
