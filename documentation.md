@@ -22,6 +22,7 @@ tutaj obrazek
 Tabela opisująca uczestników wydarzenia. Każdy wiersz opisuje jedną fizyczną osobę znajdującą się na konferencji.
 
 | Kolumna | Typ | Opis |
+|---------|-----|------|
 | AttendantID | int NOT NULL | Unikalny identyfikator uczestnika |
 | FirstName | varchar(20) NOT NULL | Imie uczestnika |
 | LastName | varchar(40) NOT NULL | Nazwisko uczestnika |
@@ -42,6 +43,7 @@ CREATE TABLE Attendants
 Tabela opisująca konferecje.
 
 | Kolumna | Typ | Opis |
+|---------|-----|------|
 | ConferenceID | int NOT NULL | Unikalny identyfikator konferecji |
 | Topic | varchar(50) NOT NULL | Temat lub nazwa konferencji |
 | StartDate | date NOT NULL | Data rozpoczęcia konferecji |
@@ -65,6 +67,7 @@ CREATE TABLE Conference
 Tabela opisująca poszczególne dnie konferecji.
 
 | Kolumna | Typ | Opis |
+|---------|-----|------|
 | ConferenceDayID | int NOT NULL | Unikalny indentyfikator dnia konferencji |
 | Date | date NOT NULL | Data wskazująca na dzień konferecji |
 | Seats | int NOT NULL | Suma ogółu miejsc podczas dnia konferencji |
@@ -88,6 +91,7 @@ CREATE TABLE ConferenceDay
 Tabela reprezentująca uczestników konferencji. Służy do skojarzenia *Attendants* z *Reservations*.
 
 | Kolumna | Typ | Opis |
+|---------|-----|------|
 | ConferenceParticipantID | int NOT NULL | Unikalny indentyfikator uczestnika konferencji |
 | AttendantID | int NOT NULL | Unikalny indentyfikator uczestnika |
 | ReservationsID | int NOT NULL | Unikalny indentyfikator rezerwacji |
@@ -107,6 +111,7 @@ CREATE TABLE ConferenceParticipants
 Tabela reprezentująca klientów dokonujących rezerwacje. Mogą to być firmy lub osoby prywatne.
 
 | Kolumna | Typ | Opis |
+|---------|-----|------|
 | CustomerID | int NOT NULL | Unikalny indentyfikator klienta |
 | Name | varchar(50) NOT NULL | Nazwa klienta |
 | Email | int NOT NULL | E-Mail klienta |
@@ -127,6 +132,7 @@ CREATE TABLE Customers
 Tabela reprezentująca dostępne zniżki.
 
 | Kolumna | Typ | Opis |
+|---------|-----|------|
 | DiscountID | int NOT NULL | Unikalny indentyfikator zniżki |
 | MinOutrunning | int NOT NULL | Minimalne wyprzedzenie |
 | MaxOutrunning | int NOT NULL | Maksymalne wyprzedzenie |
@@ -151,6 +157,7 @@ CREATE TABLE Discounts
 Tabela przechowująca zaksięgowane płatności.
 
 | Kolumna | Typ | Opis |
+|---------|-----|------|
 | PaymentID | int NOT NULL | Unikalny indentyfikator zaksięgowanej płatności |
 | Amount | numeric(6,2) NOT NULL | Kwota zaksięgowanej płatności |
 | ReservationsID | int NOT NULL | Unikalny indentyfikator rezerwacji dla której dokonano płatności | 
@@ -170,6 +177,7 @@ CREATE TABLE Payments
 Tabela przechowująca wykonanae rezerwacje.
 
 | Kolumna | Typ | Opis |
+|---------|-----|------|
 | ReservationID | int NOT NULL | Unikalny indentyfikator rezerwacji |
 | ReservationDate | date NOT NULL | Data wykonania rezerwacji |
 | PaymentDate | date NULL | Ostateczna data płatności |
@@ -195,6 +203,7 @@ CREATE TABLE Reservations
 Tabela przechowująca warsztaty
 
 | Kolumna | Typ | Opis |
+|---------|-----|------|
 | SeminarID | int NOT NULL | Unikalny indentyfikator warsztatu |
 | Seats | int NOT NULL | Ilość miejsc dostępnych na warsztacie |
 | Price | numeric(6,2) NULL | Cena warsztatu |
@@ -220,6 +229,7 @@ CREATE TABLE Seminar
 Tabela reprezentująca uczestników warsztatu. Służy do skojarzenia *SeminarAttendants* z *ConferenceParticipantID*.
 
 | Kolumna | Typ | Opis |
+|---------|-----|------|
 | SeminarParticipantsID | int NOT NULL | Unikalny indentyfikator uczestnika warsztatu |
 | SeminarReservationID | int NOT NULL | Unikalny indentyfikator rezerwacji warsztatu |
 | ConferenceParticipantID | int NOT NULL | Unikalny indentyfikator uczestnika konferencji | 
@@ -239,6 +249,7 @@ CREATE TABLE SeminarParticipants
 Tabela przechowująca wykonanae rezerwacje na warsztaty.
 
 | Kolumna | Typ | Opis |
+|---------|-----|------|
 | SeminarReservationID | int NOT NULL | Unikalny indentyfikator rezerwacji na warsztat |
 | ReservationID | int NOT NULL | Unikalny indentyfikator rezerwacji na dzień konferencji |
 | SeatsReserved | int NOT NULL | Ilość zarezerwowanych miejsc |
@@ -260,6 +271,7 @@ CREATE TABLE SeminarReservations
 Tabela opisująca studentów.
 
 | Kolumna | Typ | Opis |
+|---------|-----|------|
 | StudentID | int NOT NULL | Unikalny indentyfikator studenta |
 | StudentNumber | int NOT NULL | Numer legitymacji studenckiej |
 | AttendantID | int NOT NULL | Unikalny indentyfikator uczestnika, który jest studentem |
