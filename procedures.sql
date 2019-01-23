@@ -14,7 +14,7 @@ BEGIN
       RETURN
     END
 
-  INSERT INTO Conference(Topic, StartDate, EndDate, Address) VALUES (@Topic, @StartDate, @EndDate, @Address);
+  INSERT INTO Conference(Topic, StartDate, EndDate, Adress) VALUES (@Topic, @StartDate, @EndDate, @Address);
 
   DECLARE @conference_day AS DATE
   DECLARE @last_conference_id AS INT

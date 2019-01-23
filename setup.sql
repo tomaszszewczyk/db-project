@@ -6,116 +6,136 @@ if exists(select *
 create database conference_project
 use conference_project
 
-CREATE TABLE Attendants (
-    AttendantID int NOT NULL IDENTITY(1,1),
-    FirstName varchar(20) NOT NULL,
-    LastName varchar(40) NOT NULL,
-    CustomerID int NOT NULL,
-    CONSTRAINT Attendants_pk PRIMARY KEY (AttendantID)
+CREATE TABLE Attendants
+(
+  AttendantID int         NOT NULL IDENTITY (1,1),
+  FirstName   varchar(20) NOT NULL,
+  LastName    varchar(40) NOT NULL,
+  CustomerID  int         NOT NULL,
+  CONSTRAINT Attendants_pk PRIMARY KEY (AttendantID)
 );
 
 -- Table: Conference
-CREATE TABLE Conference (
-    ConferenceID int NOT NULL IDENTITY(1,1),
-    Topic varchar(50) NOT NULL,
-    StartDate date NOT NULL,
-    EndDate date NOT NULL,
-    Adress text NOT NULL,
+CREATE TABLE Conference
+(
+  ConferenceID int         NOT NULL IDENTITY (1,1),
+  Topic        varchar(50) NOT NULL,
+  StartDate    date        NOT NULL,
+  EndDate      date        NOT NULL,
+  Adress       text        NOT NULL,
+  IsCanceled   int DEFAULT 0
     CONSTRAINT Conference_pk PRIMARY KEY (ConferenceID),
-    CONSTRAINT dates CHECK(EndDate>StartDate),
+  CONSTRAINT dates CHECK (EndDate > StartDate),
 );
 
 -- Table: ConferenceDay
-CREATE TABLE ConferenceDay (
-    ConferenceDayID int NOT NULL IDENTITY(1,1),
-    Date date NOT NULL,
-    Seats int NOT NULL CHECK (Seats>0),
-    Price numeric(6,2) NOT NULL,
-    ConferenceID int NOT NULL,
+CREATE TABLE ConferenceDay
+(
+  ConferenceDayID int           NOT NULL IDENTITY (1,1),
+  Date            date          NOT NULL,
+  Seats           int           NOT NULL CHECK (Seats > 0),
+  Price           numeric(6, 2) NOT NULL,
+  ConferenceID    int           NOT NULL,
+  IsCanceled      int DEFAULT 0
     CONSTRAINT ConferenceDay_pk PRIMARY KEY (ConferenceDayID)
 );
 
 -- Table: ConferenceParticipants
-CREATE TABLE ConferenceParticipants (
-    ConferenceParticipantID int NOT NULL IDENTITY(1,1),
-    AttendantID int NOT NULL,
-    ReservationsID int NOT NULL,
+CREATE TABLE ConferenceParticipants
+(
+  ConferenceParticipantID int NOT NULL IDENTITY (1,1),
+  AttendantID             int NOT NULL,
+  ReservationsID          int NOT NULL,
+  IsCanceled              int DEFAULT 0
     CONSTRAINT ConferenceParticipants_pk PRIMARY KEY (ConferenceParticipantID)
 );
 
 -- Table: Customers
-CREATE TABLE Customers (
-    CustomerID int NOT NULL IDENTITY(1,1),
-    Name varchar(50) NOT NULL,
-    Email varchar(50) NOT NULL CHECK(Email LIKE '_*@_*._*'),
-    Phone int NOT NULL CHECK(Phone BETWEEN 100000000 and 999999999),
-    CONSTRAINT Customers_pk PRIMARY KEY (CustomerID)
+CREATE TABLE Customers
+(
+  CustomerID int         NOT NULL IDENTITY (1,1),
+  Name       varchar(50) NOT NULL,
+  Email      varchar(50) NOT NULL CHECK (Email LIKE '_*@_*._*'),
+  Phone      int         NOT NULL CHECK (Phone BETWEEN 100000000 and 999999999),
+  CONSTRAINT Customers_pk PRIMARY KEY (CustomerID)
 );
 
 -- Table: Discounts
-CREATE TABLE Discounts (
-    MinOutrunning int NOT NULL,
-    MaxOutrunning int NOT NULL,
-    Discount decimal(4,2) NOT NULL CHECK (Discount>0 AND Discount<1),
-    StudentDiscount decimal(4,2) NOT NULL CHECK(StudentDiscount>0 AND StudentDiscount<1),
-    ConferenceID int NOT NULL,
-    CONSTRAINT Discounts_pk PRIMARY KEY (MinOutrunning)
+CREATE TABLE Discounts
+(
+  MinOutrunning   int           NOT NULL,
+  MaxOutrunning   int           NOT NULL,
+  Discount        decimal(4, 2) NOT NULL CHECK (Discount > 0 AND Discount < 1),
+  StudentDiscount decimal(4, 2) NOT NULL CHECK (StudentDiscount > 0 AND StudentDiscount < 1),
+  ConferenceID    int           NOT NULL,
+  CONSTRAINT Discounts_pk PRIMARY KEY (MinOutrunning)
 );
 
 -- Table: Payments
-CREATE TABLE Payments (
-    PaymentID int NOT NULL IDENTITY(1,1),
-    Amount numeric(6,2) NOT NULL CHECK(Amount>0),
-    ReservationsID int NOT NULL,
-    CONSTRAINT Payments_pk PRIMARY KEY (PaymentID)
+CREATE TABLE Payments
+(
+  PaymentID      int           NOT NULL IDENTITY (1,1),
+  Amount         numeric(6, 2) NOT NULL CHECK (Amount > 0),
+  ReservationsID int           NOT NULL,
+  PaymentDate    date          NOT NULL,
+  CONSTRAINT Payments_pk PRIMARY KEY (PaymentID)
 );
 
 -- Table: Reservations
-CREATE TABLE Reservations (
-    ReservationID int NOT NULL IDENTITY(1,1),
-    ReservationDate date NOT NULL,
-    PaymentDate date NULL,
-    CustomerID int NOT NULL,
-    SeatsReserved int NOT NULL CHECK(SeatsReserved>=0,
-    ConferenceDayID int NOT NULL,
+CREATE TABLE Reservations
+(
+  ReservationID   int  NOT NULL IDENTITY (1,1),
+  ReservationDate date NOT NULL,
+  PaymentDate     date NULL,
+  CustomerID      int  NOT NULL,
+  SeatsReserved   int  NOT NULL CHECK (SeatsReserved >= 0),
+  ConferenceDayID int  NOT NULL,
+  IsCanceled      int DEFAULT 0
     CONSTRAINT Reservations_pk PRIMARY KEY (ReservationID)
 );
 
 -- Table: Seminar
-CREATE TABLE Seminar (
-    SeminarID int NOT NULL IDENTITY(1,1),
-    Seats int NOT NULL CHECK(Seats>0),
-    Price numeric(6,2) NULL,
-    StartTime time NOT NULL,
-    EndTime time NOT NULL,
-    ConferenceDayID int NOT NULL,
+CREATE TABLE Seminar
+(
+  SeminarID       int           NOT NULL IDENTITY (1,1),
+  Seats           int           NOT NULL CHECK (Seats > 0),
+  Price           numeric(6, 2) NULL,
+  StartTime       time          NOT NULL,
+  EndTime         time          NOT NULL,
+  ConferenceDayID int           NOT NULL,
+  IsCanceled      int DEFAULT 0
     CONSTRAINT Seminar_pk PRIMARY KEY (SeminarID),
-    CONSTRAINT Times CHECK (EndTime>StartTime)
+  CONSTRAINT Times CHECK (EndTime > StartTime)
 );
 
 -- Table: SeminarParticipants
-CREATE TABLE SeminarParticipants (
-    SeminarParticipantsID int NOT NULL IDENTITY(1,1),
-    SeminarReservationID int NOT NULL,
-    ConferenceParticipantID int NOT NULL,
+CREATE TABLE SeminarParticipants
+(
+  SeminarParticipantsID   int NOT NULL IDENTITY (1,1),
+  SeminarReservationID    int NOT NULL,
+  ConferenceParticipantID int NOT NULL,
+  IsCanceled              int DEFAULT 0
     CONSTRAINT SeminarParticipants_pk PRIMARY KEY (SeminarParticipantsID)
 );
 
 -- Table: SeminarReservations
-CREATE TABLE SeminarReservations (
-    SeminarReservationID int NOT NULL IDENTITY(1,1),
-    ReservationID int NOT NULL,
-    SeatsReserved int NOT NULL CHECK(SeatsReserved>=0),
-    SeminarID int NOT NULL,
+CREATE TABLE SeminarReservations
+(
+  SeminarReservationID int NOT NULL IDENTITY (1,1),
+  ReservationID        int NOT NULL,
+  SeatsReserved        int NOT NULL CHECK (SeatsReserved >= 0),
+  SeminarID            int NOT NULL,
+  IsCanceled           int DEFAULT 0
     CONSTRAINT SeminarReservations_pk PRIMARY KEY (SeminarReservationID)
 );
 
 -- Table: Students
-CREATE TABLE Students (
-    StudentID int NOT NULL IDENTITY(1,1),
-    StudentNumber int NOT NULL,
-    AttendantID int NOT NULL UNIQUE,
-    CONSTRAINT Students_pk PRIMARY KEY (StudentID)
+CREATE TABLE Students
+(
+  StudentID     int NOT NULL IDENTITY (1,1),
+  StudentNumber int NOT NULL,
+  AttendantID   int NOT NULL UNIQUE,
+  CONSTRAINT Students_pk PRIMARY KEY (StudentID)
 );
 
 -- foreign keys
