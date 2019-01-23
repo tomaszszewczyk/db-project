@@ -393,7 +393,8 @@ Warunek referencji łączący tabele *Attendants* oraz *ConferenceParticipants*
 
 ```SQL
 ALTER TABLE ConferenceParticipants
-  ADD CONSTRAINT Attendants_ConferenceParticipants FOREIGN KEY (AttendantID) REFERENCES Attendants (AttendantID);
+  ADD CONSTRAINT Attendants_ConferenceParticipants 
+  FOREIGN KEY (AttendantID) REFERENCES Attendants (AttendantID);
 ```
 
 ## Warunek *Attendants_Customers*
@@ -401,7 +402,8 @@ Warunek referencji łączący tabele *Attendants* oraz *Customers*
 
 ```SQL
 ALTER TABLE Attendants
-  ADD CONSTRAINT Attendants_Customers FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID);
+  ADD CONSTRAINT Attendants_Customers 
+  FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID);
 ```
 
 ## Warunek *ConferenceDay_Conference*
@@ -409,7 +411,8 @@ Warunek referencji łączący tabele *ConferenceDay* oraz *Conference*
 
 ```SQL
 ALTER TABLE ConferenceDay
-  ADD CONSTRAINT ConferenceDay_Conference FOREIGN KEY (ConferenceID) REFERENCES Conference (ConferenceID);
+  ADD CONSTRAINT ConferenceDay_Conference 
+  FOREIGN KEY (ConferenceID) REFERENCES Conference (ConferenceID);
 ```
 
 ## Warunek *ConferenceParticipants_Reservations*
@@ -417,7 +420,8 @@ Warunek referencji łączący tabele *ConferenceParticipants* oraz *Reservations
 
 ```SQL
 ALTER TABLE ConferenceParticipants
-  ADD CONSTRAINT ConferenceParticipants_Reservations FOREIGN KEY (ReservationsID) REFERENCES Reservations (ReservationID);
+  ADD CONSTRAINT ConferenceParticipants_Reservations 
+  FOREIGN KEY (ReservationsID) REFERENCES Reservations (ReservationID);
 ```
 
 ## Warunek *Conference_Discounts*
@@ -425,7 +429,8 @@ Warunek referencji łączący tabele *Conference* oraz *Discounts*
 
 ```SQL
 ALTER TABLE Discounts
-  ADD CONSTRAINT Conference_Discounts FOREIGN KEY (ConferenceID) REFERENCES Conference (ConferenceID);
+  ADD CONSTRAINT Conference_Discounts 
+  FOREIGN KEY (ConferenceID) REFERENCES Conference (ConferenceID);
 ```
 
 ## Warunek *Payments_Reservations*
@@ -433,7 +438,8 @@ Warunek referencji łączący tabele *Payments* oraz *Reservations*
 
 ```SQL
 ALTER TABLE Payments
-  ADD CONSTRAINT Payments_Reservations FOREIGN KEY (ReservationsID) REFERENCES Reservations (ReservationID);
+  ADD CONSTRAINT Payments_Reservations 
+  FOREIGN KEY (ReservationsID) REFERENCES Reservations (ReservationID);
 ```
 
 ## Warunek *Reservations_ConferenceDay*
@@ -441,7 +447,8 @@ Warunek referencji łączący tabele *Reservations* oraz *ConferenceDay*
 
 ```SQL
 ALTER TABLE Reservations
-  ADD CONSTRAINT Reservations_ConferenceDay FOREIGN KEY (ConferenceDayID) REFERENCES ConferenceDay (ConferenceDayID);
+  ADD CONSTRAINT Reservations_ConferenceDay 
+  FOREIGN KEY (ConferenceDayID) REFERENCES ConferenceDay (ConferenceDayID);
 ```
 
 ## Warunek *Reservations_Customers*
@@ -449,7 +456,8 @@ Warunek referencji łączący tabele *Reservations* oraz *Customers*
 
 ```SQL
 ALTER TABLE Reservations
-  ADD CONSTRAINT Reservations_Customers FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID);
+  ADD CONSTRAINT Reservations_Customers 
+  FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID);
 ```
 
 ## Warunek *Reservations_SeminarReservations*
@@ -457,7 +465,8 @@ Warunek referencji łączący tabele *Reservations* oraz *SeminarReservations*
 
 ```SQL
 ALTER TABLE SeminarReservations
-  ADD CONSTRAINT Reservations_SeminarReservations FOREIGN KEY (ReservationID) REFERENCES Reservations (ReservationID);
+  ADD CONSTRAINT Reservations_SeminarReservations 
+  FOREIGN KEY (ReservationID) REFERENCES Reservations (ReservationID);
 ```
 
 ## Warunek *SeminarParticipants_ConferenceParticipants*
@@ -465,7 +474,9 @@ Warunek referencji łączący tabele *SeminarParticipants* oraz *ConferenceParti
 
 ```SQL
 ALTER TABLE SeminarParticipants
-  ADD CONSTRAINT SeminarParticipants_ConferenceParticipants FOREIGN KEY (ConferenceParticipantID) REFERENCES ConferenceParticipants (ConferenceParticipantID);
+  ADD CONSTRAINT SeminarParticipants_ConferenceParticipants 
+  FOREIGN KEY (ConferenceParticipantID) 
+  REFERENCES ConferenceParticipants (ConferenceParticipantID);
 ```
 
 ## Warunek *SeminarParticipants_SeminarReservations*
@@ -473,7 +484,9 @@ Warunek referencji łączący tabele *SeminarParticipants* oraz *SeminarReservat
 
 ```SQL
 ALTER TABLE SeminarParticipants
-  ADD CONSTRAINT SeminarParticipants_SeminarReservations FOREIGN KEY (SeminarReservationID) REFERENCES SeminarReservations (SeminarReservationID);
+  ADD CONSTRAINT SeminarParticipants_SeminarReservations 
+  FOREIGN KEY (SeminarReservationID) 
+  REFERENCES SeminarReservations (SeminarReservationID);
 ```
 
 ## Warunek *SeminarReservations_Seminar*
@@ -481,7 +494,9 @@ Warunek referencji łączący tabele *SeminarReservations* oraz *Seminar*
 
 ```SQL
 ALTER TABLE SeminarReservations
-  ADD CONSTRAINT SeminarReservations_Seminar FOREIGN KEY (SeminarID) REFERENCES Seminar (SeminarID);
+  ADD CONSTRAINT SeminarReservations_Seminar 
+  FOREIGN KEY (SeminarID) 
+  REFERENCES Seminar (SeminarID);
 ```
 
 ## Warunek *Seminar_ConferenceDay*
@@ -489,7 +504,9 @@ Warunek referencji łączący tabele *Seminar* oraz *ConferenceDay*
 
 ```SQL
 ALTER TABLE Seminar
-  ADD CONSTRAINT Seminar_ConferenceDay FOREIGN KEY (ConferenceDayID) REFERENCES ConferenceDay (ConferenceDayID);
+  ADD CONSTRAINT Seminar_ConferenceDay 
+  FOREIGN KEY (ConferenceDayID) 
+  REFERENCES ConferenceDay (ConferenceDayID);
 ```
 
 ## Warunek *Students_Attendants*
@@ -497,7 +514,9 @@ Warunek referencji łączący tabele *Students* oraz *Attendants*
 
 ```SQL
 ALTER TABLE Students
-  ADD CONSTRAINT Students_Attendants FOREIGN KEY (AttendantID) REFERENCES Attendants (AttendantID);
+  ADD CONSTRAINT Students_Attendants 
+  FOREIGN KEY (AttendantID) 
+  REFERENCES Attendants (AttendantID);
 ```
 
 ## Warunek *Conference_DateCheck*
@@ -505,7 +524,8 @@ Warunek walidujący daty startu i końca konferencji
 
 ```SQL
 ALTER TABLE Conference
-  ADD CONSTRAINT Conference_DateCheck CHECK (Conference.StartDate <= Conference.EndDate);
+  ADD CONSTRAINT Conference_DateCheck 
+  CHECK (Conference.StartDate <= Conference.EndDate);
 ```
 
 ## Warunek *ConferenceDay_SeatsCheck*
@@ -513,7 +533,8 @@ Warunek walidujący sensowność ilości miejsc
 
 ```SQL
 ALTER TABLE ConferenceDay
-  ADD CONSTRAINT ConferenceDay_SeatsCheck CHECK (ConferenceDay.Seats >= 0);
+  ADD CONSTRAINT ConferenceDay_SeatsCheck 
+  CHECK (ConferenceDay.Seats >= 0);
 ```
 
 ## Warunek *Seminar_SeatsCheck*
@@ -521,7 +542,8 @@ Warunek walidujący sensowność ilości miejsc
 
 ```SQL
 ALTER TABLE Seminar
-  ADD CONSTRAINT Seminar_SeatsCheck CHECK (Seminar.Seats >= 0);
+  ADD CONSTRAINT Seminar_SeatsCheck 
+  CHECK (Seminar.Seats >= 0);
 ```
 
 ## Warunek *Discounts_OutrunningCheck*
@@ -529,7 +551,8 @@ Warunek walidujący wyprzedzenie w tabeli ze zniżkami
 
 ```SQL
 ALTER TABLE Discounts
-  ADD CONSTRAINT Discounts_OutrunningCheck CHECK (Discounts.MinOutrunning <= Discounts.MaxOutrunning);
+  ADD CONSTRAINT Discounts_OutrunningCheck 
+  CHECK (Discounts.MinOutrunning <= Discounts.MaxOutrunning);
 ```
 
 ## Warunek *Reservation_SeatsResercedCheck*
@@ -537,7 +560,8 @@ Warunek walidujący sensowność ilości zarezerwowanych miejsc
 
 ```SQL
 ALTER TABLE Reservations
-  ADD CONSTRAINT Reservation_SeatsResercedCheck CHECK (Reservations.SeatsReserved >= 0);
+  ADD CONSTRAINT Reservation_SeatsResercedCheck 
+  CHECK (Reservations.SeatsReserved >= 0);
 ```
 
 ## Warunek *SeminarReservations_SeatsReservedCheck*
@@ -545,7 +569,8 @@ Warunek walidujący sensowność ilości zarezerwowanych miejsc
 
 ```SQL
 ALTER TABLE SeminarReservations
-  ADD CONSTRAINT SeminarReservations_SeatsReservedCheck CHECK (SeminarReservations.SeatsReserved >= 0);
+  ADD CONSTRAINT SeminarReservations_SeatsReservedCheck 
+  CHECK (SeminarReservations.SeatsReserved >= 0);
 ```
 
 # Widoki
@@ -553,239 +578,236 @@ ALTER TABLE SeminarReservations
 ## Widok *AllConferencesView*
 Pokaż wszystkie konferencje w systemie.
 
-``` SQL
-CREATE OR ALTER VIEW AllConferencesView AS (SELECT *
-                                         from Conference)
-GO
+```SQL
+CREATE OR ALTER VIEW AllConferencesView 
+  AS (SELECT *from Conference)
 ```
 
 ## Widok *UpcomingConferencesView*
 Pokaż nadchodzące konferencje.
 
-``` SQL
+```SQL
 CREATE OR ALTER VIEW UpcomingConferencesView AS
-SELECT *
-from Conference
-WHERE DATEDIFF(month, GETDATE(), StartDate) BETWEEN 0 AND 3 
-GO
+  SELECT *
+  FROM Conference
+  WHERE DATEDIFF(month, GETDATE(), StartDate) BETWEEN 0 AND 3 
 ```
 
 ## Widok *NotPaitReservationView*
 Pokaż niezapłacone rezerwacje.
 
-``` SQL
+```SQL
 CREATE OR ALTER VIEW NotPaitReservationView AS
-SELECT SUM(Amount) AS Paid, dbo.GetConferenceReservationCost(ReservationsID) AS Cost, ReservationsID AS ReservationID
-from Payments
-GROUP BY ReservationsID
-HAVING (SUM(Amount) < dbo.GetConferenceReservationCost(ReservationsID))
-GO
+  SELECT 
+    SUM(Amount) AS Paid, 
+    dbo.GetConferenceReservationCost(ReservationsID) AS Cost, 
+    ReservationsID AS ReservationID
+  FROM Payments
+  GROUP BY ReservationsID
+  HAVING (SUM(Amount) < dbo.GetConferenceReservationCost(ReservationsID))
 ```
 
 ## Widok *ReservationsWithoutAttendants*
 Pokaż rezerwacje dla których nie wypełniono daych uczestnika.
 
-``` SQL
+```SQL
 CREATE OR ALTER VIEW ReservationsWithoutAttendants AS
 SELECT Conference.Topic, Customers.*
 FROM ConferenceParticipants
-       LEFT JOIN Reservations ON Reservations.ReservationID = ConferenceParticipants.ReservationsID
-       LEFT JOIN ConferenceDay ON ConferenceDay.ConferenceDayID = Reservations.ConferenceDayID
-       LEFT JOIN Conference ON Conference.ConferenceID = ConferenceDay.ConferenceID
-       LEFT JOIN Customers ON Customers.CustomerID = Reservations.CustomerID
+       LEFT JOIN Reservations 
+        ON Reservations.ReservationID = ConferenceParticipants.ReservationsID
+       LEFT JOIN ConferenceDay 
+        ON ConferenceDay.ConferenceDayID = Reservations.ConferenceDayID
+       LEFT JOIN Conference 
+        ON Conference.ConferenceID = ConferenceDay.ConferenceID
+       LEFT JOIN Customers 
+        ON Customers.CustomerID = Reservations.CustomerID
 WHERE ConferenceParticipants.AttendantID IS NULL
-GO
 ```
 
 ## Widok *CustomersReservationCount*
 Pokaż ilość rezerwacji dla każdego klienta.
 
-``` SQL
+```SQL
 CREATE OR ALTER VIEW CustomersReservationCount AS
 SELECT Customers.CustomerID, COUNT(*) AS NumOfReservations
 FROM Customers
        JOIN Reservations ON Reservations.CustomerID = Customers.CustomerID
 GROUP BY Customers.CustomerID
-GO
 ```
 
 ## Widok *BestCustomersView*
 Pokaż najlepszych klientów.
 
-``` SQL
+```SQL
 CREATE OR ALTER VIEW BestCustomersView AS
 SELECT Customers.*, customer_count.NumOfReservations
 FROM Customers
-       JOIN CustomersReservationCount customer_count ON customer_count.CustomerID = Customers.CustomerID
-GO
+       JOIN CustomersReservationCount customer_count 
+       ON customer_count.CustomerID = Customers.CustomerID
 ```
 
 ## Widok *ConferenceDayView*
 Pokaż dni konferencji.
 
-``` SQL
+```SQL
 CREATE OR ALTER VIEW ConferenceDayView AS
-SELECT *
-FROM ConferenceDay
-GO
+  SELECT *
+  FROM ConferenceDay
 ```
 
 ## Widok (funkcja) *DaysWithinConferenceView*
 Pokaż dni w danej konferencji.
 
-``` SQL
+```SQL
 CREATE OR ALTER FUNCTION DaysWithinConferenceView(@ConferenceID INT) RETURNS TABLE
   AS RETURN SELECT *
             FROM ConferenceDay
             WHERE ConferenceDay.ConferenceID = @ConferenceID
-GO
 ```
 
 ## Widok *DiscountsView*
 Pokaż zniżki.
 
-``` SQL
+```SQL
 CREATE OR ALTER VIEW DiscountsView AS
-SELECT *
-FROM Discounts
-GO
+  SELECT *
+  FROM Discounts
 ```
 
 ## Widok (funkcja) *DiscountsWithinConferenceView*
 Pokaż zniżki dla danej konferencji.
 
-``` SQL
+```SQL
 CREATE OR ALTER FUNCTION DiscountsWithinConferenceView(@ConferenceID INT) RETURNS TABLE
   AS RETURN SELECT *
             FROM Discounts
             WHERE Discounts.ConferenceID = @ConferenceID
-GO
 ```
 
 ## Widok *SeminarView*
 Pokaż warsztaty
 
-``` SQL
+```SQL
 CREATE OR ALTER VIEW SeminarView AS
 SELECT *
 FROM Seminar
-GO
 ```
 
 ## Widok (funkcja) *SeminarWithinConferenceDayView*
 Pokaż warsztaty w danym dniu konferencji.
 
-``` SQL
+```SQL
 CREATE OR ALTER FUNCTION SeminarWithinConferenceDayView(@ConferenceDayID INT) RETURNS TABLE
   AS RETURN SELECT *
             FROM Seminar
             WHERE Seminar.ConferenceDayID = @ConferenceDayID
-GO
 ```
 
 ## Widok (funkcja) *SeminarWithinConferenceView*
 Pokaż warsztaty w danej konferencji.
 
-``` SQL
+```SQL
 CREATE OR ALTER FUNCTION SeminarWithinConferenceView(@Conference INT) RETURNS TABLE
   AS RETURN
   SELECT Seminar.*
   FROM Seminar
-         LEFT JOIN ConferenceDay ON Seminar.ConferenceDayID = ConferenceDay.ConferenceDayID
+         LEFT JOIN ConferenceDay 
+          ON Seminar.ConferenceDayID = ConferenceDay.ConferenceDayID
   WHERE ConferenceDay.ConferenceID = @Conference
-GO
 ```
 
 ## Widok *ReservationsView*
 Pokaż rezerwacje.
 
-``` SQL
+```SQL
 CREATE OR ALTER VIEW ReservationsView AS
 SELECT *,
        dbo.GetConferenceReservationCost(Reservations.ReservationID) AS Total,
        dbo.GetReservationPaid(Reservations.ReservationID)           AS Paid
 FROM Reservations
-GO
 ```
 
 ## Widok (funkcja) *ReservationWithinConferenceDayView*
 Pokaż rezerwacje na dany dzień.
 
-``` SQL
-CREATE OR ALTER FUNCTION ReservationWithinConferenceDayView(@ConferenceDayID INT) RETURNS TABLE
+```SQL
+CREATE OR ALTER FUNCTION ReservationWithinConferenceDayView(@ConferenceDayID INT) 
+RETURNS TABLE
   AS RETURN SELECT *,
                    dbo.GetConferenceReservationCost(Reservations.ReservationID) AS Total,
                    dbo.GetReservationPaid(Reservations.ReservationID)           AS Paid
             FROM Reservations
             WHERE Reservations.ConferenceDayID = @ConferenceDayID
-GO
 ```
 
 ## Widok *DuePaidReservationView*
 Pokaż niezapłacone rezerwacje.
 
-``` SQL
+```SQL
 CREATE OR ALTER VIEW DuePaidReservationView
 AS
-SELECT *,
-       dbo.GetConferenceReservationCost(Reservations.ReservationID) AS Total,
-       dbo.GetReservationPaid(Reservations.ReservationID)           AS Paid
-FROM Reservations
-WHERE dbo.GetConferenceReservationCost(Reservations.ReservationID) > dbo.GetReservationPaid(Reservations.ReservationID)
-GO
+  SELECT *,
+         dbo.GetConferenceReservationCost(Reservations.ReservationID) AS Total,
+         dbo.GetReservationPaid(Reservations.ReservationID)           AS Paid
+  FROM Reservations
+  WHERE dbo.GetConferenceReservationCost(Reservations.ReservationID) > 
+        dbo.GetReservationPaid(Reservations.ReservationID)
 ```
 
 ## Widok *ReservationsView*
 Pokaż rezerwacje.
 
-``` SQL
+```SQL
 CREATE OR ALTER VIEW ReservationsView AS
-SELECT *
-FROM SeminarReservations
-GO
+  SELECT *
+  FROM SeminarReservations
 ```
 
 ## Widok (funkcja) *ReservationWithinConferenceDayView*
 Pokaż rezerwacje na dany dzień.
 
-``` SQL
-CREATE OR ALTER FUNCTION ReservationWithinConferenceDayView(@ConferenceDayReservationID INT) RETURNS TABLE
+```SQL
+CREATE OR ALTER FUNCTION ReservationWithinConferenceDayView(@ConferenceDayReservationID INT) 
+RETURNS TABLE
   AS RETURN SELECT *
             FROM SeminarReservations
             WHERE SeminarReservations.ReservationID = @ConferenceDayReservationID
-GO
 ```
 
 ## Widok (funkcja) *ConferenceDayListView*
 Pokaż podsumowanie dnia.
 
-``` SQL
+```SQL
 CREATE OR ALTER function ConferenceDayListView(@DayID int)
   RETURNS TABLE
     AS RETURN
     SELECT DISTINCT FirstName, LastName
     from Attendants
-           JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID = Attendants.AttendantID
-           JOIN Reservations on ConferenceParticipants.ReservationsID = Reservations.ReservationID
+           JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID = 
+                                          Attendants.AttendantID
+           JOIN Reservations ON ConferenceParticipants.ReservationsID = 
+                                Reservations.ReservationID
     WHERE @DayID = Reservations.ConferenceDayID
-GO
 ```
 
 ## Widok (funkcja) *SeminarDayListView*
 Pokaż podsumowanie warsztatu.
 
-``` SQL
+```SQL
 CREATE OR ALTER function SeminarDayListView(@SeminarID int)
   RETURNS TABLE
     AS RETURN
     SELECT DISTINCT FirstName, LastName
     from Attendants
-           JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID = Attendants.AttendantID
+           JOIN ConferenceParticipants ON ConferenceParticipants.AttendantID = 
+                                          Attendants.AttendantID
            JOIN SeminarParticipants
-                on ConferenceParticipants.ConferenceParticipantID = SeminarParticipants.ConferenceParticipantID
-           JOIN SeminarReservations SR on SeminarParticipants.SeminarReservationID = SR.SeminarReservationID
+                ON ConferenceParticipants.ConferenceParticipantID = 
+                   SeminarParticipants.ConferenceParticipantID
+           JOIN SeminarReservations SR ON SeminarParticipants.SeminarReservationID = 
+                                          SR.SeminarReservationID
     WHERE @SeminarID = SeminarID
-GO
 ```
 
 # Funkcje
@@ -807,7 +829,6 @@ BEGIN
                  WHERE ReservationID = @ReservationID);
   RETURN @result
 END
-GO
 ```
 
 ## Funkcja *GetReservationPaid*
@@ -818,7 +839,10 @@ CREATE OR ALTER FUNCTION GetReservationPaid(@ReservationID INT) RETURNS NUMERIC(
 AS
 BEGIN
   DECLARE @result AS NUMERIC(6, 2)
-  SET @result = (SELECT SUM(Amount) FROM Payments WHERE ReservationsID = @ReservationID GROUP BY ReservationsID)
+  SET @result = (SELECT SUM(Amount) 
+                 FROM Payments 
+                 WHERE ReservationsID = @ReservationID 
+                 GROUP BY ReservationsID)
   IF @result IS NOT NULL
     BEGIN
       RETURN @result
@@ -826,7 +850,6 @@ BEGIN
 
   RETURN 0
 END
-GO
 ```
 
 ## Funkcja *GetConferenceStartDate*
@@ -838,10 +861,11 @@ CREATE OR ALTER FUNCTION GetConferenceStartDate(@ConferenceID INT)
 AS
 BEGIN
   DECLARE @result as DATE
-  SET @result = (SELECT StartDate FROM Conference WHERE Conference.ConferenceID = @ConferenceID)
+  SET @result = (SELECT StartDate 
+                 FROM Conference 
+                 WHERE Conference.ConferenceID = @ConferenceID)
   RETURN @result
 END
-GO
 ```
 
 ## Funkcja *GetConferenceEndDate*
@@ -853,10 +877,10 @@ CREATE OR ALTER FUNCTION GetConferenceEndDate(@ConferenceID INT)
 AS
 BEGIN
   DECLARE @result as DATE
-  SET @result = (SELECT EndDate FROM Conference WHERE Conference.ConferenceID = @ConferenceID)
+  SET @result = (SELECT EndDate FROM Conference 
+                 WHERE Conference.ConferenceID = @ConferenceID)
   RETURN @result
 END
-GO
 ```
 
 ## Funkcja *GetFreeSeatsByConferenceDayID*
@@ -872,7 +896,8 @@ BEGIN
   DECLARE @already_taken_seats AS INT
   DECLARE @result AS INT
   SET @all_seats_at_conference =
-      (SELECT Seats FROM ConferenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
+      (SELECT Seats FROM ConferenceDay 
+        WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
   SET @already_taken_seats =
       (SELECT SUM(SeatsReserved)
        FROM Reservations
@@ -881,7 +906,6 @@ BEGIN
   SET @result = @all_seats_at_conference - @already_taken_seats
   RETURN @result
 END
-GO
 ```
 
 ## Funkcja *GetFreeSeatsBySeminarID*
@@ -895,7 +919,8 @@ BEGIN
   DECLARE @all_seats_at_seminar AS INT
   DECLARE @already_taken_seats AS INT
   DECLARE @result AS INT
-  SET @all_seats_at_seminar = (SELECT Seats FROM Seminar WHERE Seminar.SeminarID = @SeminarID)
+  SET @all_seats_at_seminar = (SELECT Seats FROM Seminar 
+                               WHERE Seminar.SeminarID = @SeminarID)
   SET @already_taken_seats =
       (SELECT SUM(SeatsReserved)
        FROM SeminarReservations
@@ -904,7 +929,6 @@ BEGIN
   SET @result = @all_seats_at_seminar - @already_taken_seats
   RETURN @result
 END
-GO
 ```
 
 ## Funkcja *IsAStudent*
@@ -915,7 +939,10 @@ CREATE OR ALTER FUNCTION IsAStudent(@CustomerID int)
   returns bit
 AS
 BEGIN
-  IF ((SELECT COUNT(AttendantID) FROM Attendants GROUP BY CustomerID HAVING CustomerID = @CustomerID) > 1)
+  IF ((SELECT COUNT(AttendantID) 
+       FROM Attendants 
+       GROUP BY CustomerID 
+       HAVING CustomerID = @CustomerID) > 1)
     BEGIN
       return 0
     end
@@ -931,7 +958,6 @@ BEGIN
 
   RETURN 0;
 end
-GO
 ```
 
 # Triggery
@@ -948,7 +974,6 @@ CREATE OR ALTER TRIGGER CancelConferenceDayOnConferenceCancelation
   SET ConferenceDay.IsCanceled = (ConferenceDay.IsCanceled | Conference.IsCanceled)
   FROM ConferenceDay
          LEFT JOIN Conference ON ConferenceDay.ConferenceID = Conference.ConferenceID
-GO
 ```
 
 ## Trigger *CancelReservationOnConferenceDayCancelation*
@@ -962,8 +987,8 @@ CREATE OR ALTER TRIGGER CancelReservationOnConferenceDayCancelation
   UPDATE Reservations
   SET Reservations.IsCanceled = (Reservations.IsCanceled | ConferenceDay.IsCanceled)
   FROM Reservations
-         LEFT JOIN ConferenceDay ON Reservations.ConferenceDayID = ConferenceDay.ConferenceDayID
-GO
+         LEFT JOIN ConferenceDay ON Reservations.ConferenceDayID = 
+                                    ConferenceDay.ConferenceDayID
 ```
 
 ## Trigger *CancelSeminarOnConferenceDayCancelation*
@@ -978,7 +1003,6 @@ CREATE OR ALTER TRIGGER CancelSeminarOnConferenceDayCancelation
   SET Seminar.IsCanceled = (Seminar.IsCanceled | ConferenceDay.IsCanceled)
   FROM Seminar
          LEFT JOIN ConferenceDay ON Seminar.ConferenceDayID = ConferenceDay.ConferenceDayID
-GO
 ```
 
 ## Trigger *CancelSeminarReservationOnSeminarCancelation*
@@ -993,7 +1017,6 @@ CREATE OR ALTER TRIGGER CancelSeminarReservationOnSeminarCancelation
   SET SeminarReservation.IsCanceled = (SeminarReservation.IsCanceled | Seminar.IsCanceled)
   FROM SeminarReservation
          LEFT JOIN Seminar ON SeminarReservation.SeminarID = Seminar.SeminarID
-GO
 ```
 
 ## Trigger *CancelSeminarParticipantOnSeminarReservationCancelation*
@@ -1005,11 +1028,12 @@ CREATE OR ALTER TRIGGER CancelSeminarParticipantOnSeminarReservationCancelation
   AFTER UPDATE
   AS
   UPDATE SeminarParticipant
-  SET SeminarParticipant.IsCanceled = (SeminarParticipant.IsCanceled | SeminarReservations.IsCanceled)
+  SET SeminarParticipant.IsCanceled = 
+    (SeminarParticipant.IsCanceled | SeminarReservations.IsCanceled)
   FROM SeminarParticipant
          LEFT JOIN SeminarReservations
-                   ON SeminarParticipant.SeminarReservationID = SeminarReservations.SeminarReservationID
-GO
+                   ON SeminarParticipant.SeminarReservationID = 
+                      SeminarReservations.SeminarReservationID
 ```
 
 ## Trigger *CancelParticipantOnReservationCancelation*
@@ -1024,7 +1048,6 @@ CREATE OR ALTER TRIGGER CancelParticipantOnReservationCancelation
   SET Participant.IsCanceled = (Participant.IsCanceled | Reservations.IsCanceled)
   FROM Participant
          LEFT JOIN Reservations ON Participant.ReservationID = Reservations.ReservationID
-GO
 ```
 
 # Procedury
@@ -1048,7 +1071,8 @@ BEGIN
       RETURN
     END
 
-  INSERT INTO Conference(Topic, StartDate, EndDate, Address) VALUES (@Topic, @StartDate, @EndDate, @Address);
+  INSERT INTO Conference(Topic, StartDate, EndDate, Address) 
+  VALUES (@Topic, @StartDate, @EndDate, @Address);
 
   DECLARE @conference_day AS DATE
   DECLARE @last_conference_id AS INT
@@ -1064,14 +1088,16 @@ BEGIN
     SET @conference_day = DATEADD(day, 1, @conference_day)
   END
 END
-GO
 ```
 
 ## Procedura *AddConference*
 Procedura dodająca nową konferecję, przyjmując za datę końcową datę startu.
 
 ```SQL
-CREATE OR ALTER PROCEDURE AddConference @Topic TEXT, @StartDate DATE, @Address TEXT, @DefaultPrice NUMERIC(6, 2),
+CREATE OR ALTER PROCEDURE AddConference @Topic TEXT, 
+                                        @StartDate DATE, 
+                                        @Address TEXT, 
+                                        @DefaultPrice NUMERIC(6, 2),
                                         @DefaultSeats INT
 AS
 EXEC AddConferenceWithEndDate
@@ -1081,14 +1107,16 @@ EXEC AddConferenceWithEndDate
      @Address = @Address,
      @DefaultPrice = @DefaultPrice,
      @DefaultSeats = @DefaultSeats
-GO
 ```
 
 ## Procedura *AddConferenceDay*
 Procedura dodająca dzień konferencji.
 
 ```SQL
-CREATE OR ALTER PROCEDURE AddConferenceDay @Date DATE, @Seats INT, @Price NUMERIC(6, 2), @ConferenceID INT
+CREATE OR ALTER PROCEDURE AddConferenceDay @Date DATE, 
+                                           @Seats INT, 
+                                           @Price NUMERIC(6, 2), 
+                                           @ConferenceID INT
 AS
 BEGIN
   IF @Seats < 0
@@ -1098,16 +1126,17 @@ BEGIN
       RETURN
     END
 
-  IF NOT @Date BETWEEN dbo.GetConferenceStartDate(@ConferenceID) AND dbo.GetConferenceEndDate(@ConferenceID)
+  IF NOT @Date BETWEEN dbo.GetConferenceStartDate(@ConferenceID) AND 
+                       dbo.GetConferenceEndDate(@ConferenceID)
     BEGIN
       RAISERROR ('Conference day date must be within conference', 0, 0)
 
       RETURN
     END
 
-  INSERT INTO ConferenceDay(Date, Seats, Price, ConferenceID) values (@Date, @Seats, @Price, @ConferenceID)
+  INSERT INTO ConferenceDay(Date, Seats, Price, ConferenceID) 
+  VALUES (@Date, @Seats, @Price, @ConferenceID)
 END
-GO
 ```
 
 ## Procedura *AddDiscount*
@@ -1135,17 +1164,27 @@ BEGIN
       RETURN
     END
 
-  INSERT INTO Discounts(MinOutrunning, MaxOutrunning, Discount, StudentDiscount, ConferenceID)
-  VALUES (@MinOutrunning, @MaxOutrunning, @Discount, @StudentDiscount, @ConferenceID)
+  INSERT INTO Discounts(MinOutrunning, 
+                        MaxOutrunning, 
+                        Discount, 
+                        StudentDiscount, 
+                        ConferenceID)
+  VALUES (@MinOutrunning, 
+          @MaxOutrunning, 
+          @Discount, 
+          @StudentDiscount, 
+          @ConferenceID)
 END
-GO
 ```
 
 ## Procedura *AddSeminar*
 Procedura dodająca warsztat.
 
 ```SQL
-CREATE OR ALTER PROCEDURE AddSeminar @Seats INT, @Price NUMERIC(6, 2), @StartTime TIME, @EndTime TIME,
+CREATE OR ALTER PROCEDURE AddSeminar @Seats INT, 
+                                     @Price NUMERIC(6, 2), 
+                                     @StartTime TIME, 
+                                     @EndTime TIME,
                                      @ConferenceDayID INT
 AS
 BEGIN
@@ -1156,7 +1195,8 @@ BEGIN
       RETURN
     end
 
-  IF NOT EXISTS(SELECT * FROM ConferenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
+  IF NOT EXISTS(SELECT * FROM ConferenceDay 
+                WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
     BEGIN
       RAISERROR ('Conference day ID does not exist', 0, 0)
 
@@ -1173,14 +1213,15 @@ BEGIN
   INSERT INTO Seminar(Seats, Price, StartTime, EndTime, ConferenceDayID)
   VALUES (@Seats, @Price, @StartTime, @EndTime, @ConferenceDayID)
 END
-GO
 ```
 
 ## Procedura *AddReservation*
 Procedura dodająca rezerwację oraz dodająca uczestników.
 
 ```SQL
-CREATE OR ALTER PROCEDURE AddReservation @CustomerID INT, @SeatsReserved INT, @ConferenceDayID INT
+CREATE OR ALTER PROCEDURE AddReservation @CustomerID INT, 
+                                         @SeatsReserved INT, 
+                                         @ConferenceDayID INT
 AS
 BEGIN
   IF @SeatsReserved < 0
@@ -1204,7 +1245,8 @@ BEGIN
       RETURN
     END
 
-  IF NOT EXISTS(SELECT * FROM ConferenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
+  IF NOT EXISTS(SELECT * FROM ConferenceDay 
+                WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
     BEGIN
       RAISERROR ('Conference day ID does not exist', 0, 0)
 
@@ -1228,18 +1270,20 @@ BEGIN
   SET @index = 0
   WHILE @index < @SeatsReserved
   BEGIN
-    EXEC AddConferenceParticipant @ReservationsID = @last_added_reservation_id, @AttendantID = null
+    EXEC AddConferenceParticipant @ReservationsID = @last_added_reservation_id, 
+                                  @AttendantID = null
     SET @index = @index + 1
   end
 END
-GO
 ```
 
 ## Procedura *AddCustomer*
 Procedura dodająca klienta.
 
 ```SQL
-CREATE OR ALTER PROCEDURE AddCustomer @Name VARCHAR(50), @Email VARCHAR(50), @Phone VARCHAR(9)
+CREATE OR ALTER PROCEDURE AddCustomer @Name VARCHAR(50), 
+                                      @Email VARCHAR(50), 
+                                      @Phone VARCHAR(9)
 AS
 BEGIN
   IF @Name = ''
@@ -1265,7 +1309,6 @@ BEGIN
 
   INSERT INTO Customers(Name, Email, Phone) VALUES (@Name, @Email, @Phone)
 end
-GO
 ```
 
 ## Procedura *AddPayment*
@@ -1276,16 +1319,17 @@ CREATE OR ALTER PROCEDURE AddPayment @Amount NUMERIC(6, 2), @ReservationsID INT
 AS
 BEGIN
 
-  IF NOT EXISTS(SELECT * FROM Reservations WHERE Reservations.ReservationID = @ReservationsID)
+  IF NOT EXISTS(SELECT * FROM Reservations 
+                WHERE Reservations.ReservationID = @ReservationsID)
     BEGIN
       RAISERROR ('Reservation ID does not exist', 0, 0)
 
       RETURN
     END
 
-  INSERT INTO Payments(Amount, ReservationsID, PaymentDate) VALUES (@Amount, @ReservationsID, GETDATE())
+  INSERT INTO Payments(Amount, ReservationsID, PaymentDate) 
+    VALUES (@Amount, @ReservationsID, GETDATE())
 end
-GO
 ```
 
 ## Procedura *AddConferenceParticipant*
@@ -1296,28 +1340,31 @@ CREATE OR ALTER PROCEDURE AddConferenceParticipant @ReservationsID INT, @Attenda
 AS
 BEGIN
 
-  IF NOT EXISTS(SELECT * FROM Reservations WHERE Reservations.ReservationID = @ReservationsID)
+  IF NOT EXISTS(SELECT * FROM Reservations 
+                WHERE Reservations.ReservationID = @ReservationsID)
     BEGIN
       RAISERROR ('Reservation ID does not exist', 0, 0)
 
       RETURN
     END
 
-  INSERT INTO ConferenceParticipants (AttendantID, ReservationsID) VALUES (@AttendantID, @ReservationsID)
+  INSERT INTO ConferenceParticipants (AttendantID, ReservationsID) 
+    VALUES (@AttendantID, @ReservationsID)
 end
-GO
 ```
 
 ## Procedura *AddSeminarParticipant*
 Procedura dodająca uczestnika warsztatu.
 
 ```SQL
-CREATE OR ALTER PROCEDURE AddSeminarParticipant @SeminarReservationID INT, @ConferenceParticipantID INT
+CREATE OR ALTER PROCEDURE AddSeminarParticipant @SeminarReservationID INT, 
+                                                @ConferenceParticipantID INT
 AS
 BEGIN
 
   IF NOT EXISTS(
-      SELECT * FROM SeminarReservations WHERE SeminarReservations.SeminarReservationID = @SeminarReservationID)
+      SELECT * FROM SeminarReservations 
+      WHERE SeminarReservations.SeminarReservationID = @SeminarReservationID)
     BEGIN
       RAISERROR ('Seminar reservation ID does not exist', 0, 0)
 
@@ -1326,21 +1373,23 @@ BEGIN
 
   IF NOT EXISTS(SELECT *
                 FROM ConferenceParticipants
-                WHERE ConferenceParticipants.ConferenceParticipantID = @ConferenceParticipantID)
+                WHERE ConferenceParticipants.ConferenceParticipantID = 
+                  @ConferenceParticipantID)
     BEGIN
       RAISERROR ('Conference participant ID does not exist', 0, 0)
 
       RETURN
     END
 end
-GO
 ```
 
 ## Procedura *AddSeminarReservation*
 Procedura dodająca rezerwację na warsztat oraz tworząca uczestników warsztatu.
 
 ```SQL
-CREATE OR ALTER PROCEDURE AddSeminarReservation @ReservationID INT, @SeatsReserved INT, @SeminarID INT
+CREATE OR ALTER PROCEDURE AddSeminarReservation @ReservationID INT, 
+                                                @SeatsReserved INT, 
+                                                @SeminarID INT
 AS
 BEGIN
   IF @SeatsReserved < 0
@@ -1364,7 +1413,8 @@ BEGIN
       RETURN
     END
 
-  IF NOT EXISTS(SELECT * FROM Reservations WHERE Reservations.ReservationID = @ReservationID)
+  IF NOT EXISTS(SELECT * FROM Reservations 
+                WHERE Reservations.ReservationID = @ReservationID)
     BEGIN
       RAISERROR ('Conference reservation ID does not exist', 0, 0)
 
@@ -1382,18 +1432,20 @@ BEGIN
   SET @index = 0
   WHILE @index < @SeatsReserved
   BEGIN
-    EXEC AddSeminarParticipant @SeminarReservationID = @last_added_reservation_id, @ConferenceParticipantID = null
+    EXEC AddSeminarParticipant @SeminarReservationID = @last_added_reservation_id, 
+                               @ConferenceParticipantID = null
     SET @index = @index + 1
   end
 END
-GO
 ```
 
 ## Procedura *AddAttendant*
 Procedura dodająca uczestnika wydarzenia.
 
 ```SQL
-CREATE OR ALTER PROCEDURE AddAttendant @FirstName VARCHAR(20), @LastName VARCHAR(40), @CustomerID INT
+CREATE OR ALTER PROCEDURE AddAttendant @FirstName VARCHAR(20), 
+                                       @LastName VARCHAR(40), 
+                                       @CustomerID INT
 AS
 BEGIN
   IF @FirstName = ''
@@ -1417,9 +1469,9 @@ BEGIN
       RETURN
     END
 
-  INSERT INTO Attendants(FirstName, LastName, CustomerID) VALUES (@FirstName, @LastName, @CustomerID)
+  INSERT INTO Attendants(FirstName, LastName, CustomerID) 
+    VALUES (@FirstName, @LastName, @CustomerID)
 end
-GO
 ```
 
 ## Procedura *AddStudent*
@@ -1439,7 +1491,6 @@ BEGIN
 
   INSERT INTO Students(AttendantID, StudentNumber) VALUES (@AttendantID, @StudendNumber)
 END
-GO
 ```
 
 ## Procedura *ChangeSeatsConferenceDay*
@@ -1450,7 +1501,8 @@ CREATE OR ALTER PROCEDURE ChangeSeatsConferenceDay @ConferenceDayID INT, @NewSea
 AS
 BEGIN
 
-  IF NOT EXISTS(SELECT * FROM ConferenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
+  IF NOT EXISTS(SELECT * FROM ConferenceDay 
+                WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
     BEGIN
       RAISERROR ('Conference day ID does not exist', 0, 0)
       RETURN
@@ -1463,7 +1515,8 @@ BEGIN
     END
 
   DECLARE @current_seats AS INT
-  SET @current_seats = (SELECT Seats FROM ConfrenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
+  SET @current_seats = (SELECT Seats FROM ConfrenceDay 
+    WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
   DECLARE @diff AS INT
   SET @diff = @NewSeats - @current_seats
 
@@ -1475,7 +1528,6 @@ BEGIN
 
   UPDATE ConferenceDay SET Seats = @NewSeats WHERE ConferenceDayID = @ConferenceDayID
 end
-GO
 ```
 
 ## Procedura *ChangeSeatsSeminar*
@@ -1511,7 +1563,6 @@ BEGIN
 
   UPDATE Seminar SET Seats = @NewSeats WHERE SeminarID = @SeminarID
 end
-GO
 ```
 
 ## Procedura *CancelConference*
@@ -1530,7 +1581,6 @@ BEGIN
 
   UPDATE Conference SET IsCanceled = 1 WHERE ConferenceID = @ConferenceID
 end
-GO
 ```
 
 ## Procedura *CancelConferenceDay*
@@ -1541,7 +1591,8 @@ CREATE OR ALTER PROCEDURE CancelConferenceDay @ConferenceDayID INT
 AS
 BEGIN
 
-  IF NOT EXISTS(SELECT * FROM ConferenceDay WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
+  IF NOT EXISTS(SELECT * FROM ConferenceDay 
+                WHERE ConferenceDay.ConferenceDayID = @ConferenceDayID)
     BEGIN
       RAISERROR ('Conference day ID does not exist', 0, 0)
       RETURN
@@ -1549,7 +1600,6 @@ BEGIN
 
   UPDATE ConferenceDay SET IsCanceled = 1 WHERE ConferenceDayID = @ConferenceDayID
 end
-GO
 ```
 
 ## Procedura *CancelSeminar*
@@ -1568,7 +1618,6 @@ BEGIN
 
   UPDATE Seminar SET IsCanceled = 1 WHERE SeminarID = @SeminarID
 end
-GO
 ```
 
 ## Procedura *CancelReservation*
@@ -1587,7 +1636,6 @@ BEGIN
 
   UPDATE Reservation SET IsCanceled = 1 WHERE ReservationID = @ReservationID
 end
-GO
 ```
 
 ## Procedura *CancelSeminarReservation*
@@ -1598,13 +1646,14 @@ CREATE OR ALTER PROCEDURE CancelSeminarReservation @SeminarReservationID INT
 AS
 BEGIN
 
-  IF NOT EXISTS(SELECT * FROM SeminarReservation WHERE SeminarReservation.SeminarReservationID = @SeminarReservationID)
+  IF NOT EXISTS(SELECT * FROM SeminarReservation 
+                WHERE SeminarReservation.SeminarReservationID = @SeminarReservationID)
     BEGIN
       RAISERROR ('Seminar Reservation ID does not exist', 0, 0)
       RETURN
     END
 
-  UPDATE SeminarReservation SET IsCanceled = 1 WHERE SeminarReservationID = @SeminarReservationID
+  UPDATE SeminarReservation SET IsCanceled = 1 
+    WHERE SeminarReservationID = @SeminarReservationID
 end
-GO
 ```
