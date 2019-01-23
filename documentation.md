@@ -109,9 +109,26 @@
 ## Opis problemu
 Projekt wspiera działanie firmy organizującej konferencje.
 
-Firma organizuje konferencje, które mogą być jedno lub kilkudniowe. Klientami mogą być zarówno indywidualne osoby jak i firmy, natomiast uczestnikami konferencji są osoby. Firma nie musi podawać od razu przy rejestracji listy uczestników. Może zarezerwować odpowiednią ilość miejsc na określone dni oraz na warsztaty, natomiast na 2 tygodnie przed rozpoczęciem musi te dane uzupełnić. Dla konferencji kilkudniowych, uczestnicy mogą rejestrować się na dowolne z tych dni, dowolną liczbę osób.
+Firma organizuje konferencje, które mogą być jedno lub kilkudniowe. Ponadto w konferencji zawierają się warsztaty na które należy rejestrować się oddzielnie. Klientami mogą być zarówno indywidualne osoby jak i firmy, natomiast uczestnikami konferencji są osoby. Firma nie musi podawać od razu przy rejestracji listy uczestników. Może zarezerwować odpowiednią ilość miejsc na określone dni oraz na warsztaty, natomiast na 2 tygodnie przed rozpoczęciem musi te dane uzupełnić. Dla konferencji kilkudniowych, uczestnicy mogą rejestrować się na dowolne z tych dni, dowolną liczbę osób.
 
 System obsługiwany jest przez serwis www, który powinien korzystać z procedur i funkcji udostępnianych przez bazę. Baza dostarcza danych do wyświetlenia na stronie, natomiast poprzez serwis użytkownik może obsługiwać bazę bez bezpośredniego dostępu do niej.
+
+### Użytkownicy
+1. Klient - rejestracja oraz dodawanie rezerwacji.
+2. Pracownik - księgowanie płatności, generowanie podsumowań.
+3. Zarząd - generowanie podsumowań dotyczących najaktywniejszych klientów oraz najpopularniejszych produktów.
+
+### Wygenerowane dane
+Na potrzeby testów została wynerowana przykładowa baza zawierająca:
+- 500 klientów,
+- 100 konferencji,
+- 100 zniżek,
+- 300 dni konferencji,
+- 1000 warsztatów,
+- 2000 rezerwacji,
+- 2000 rezerwacji warsztatowych,
+- 1000 zaksięgowanych płatności,
+- 1000 uczestników.
 
 # Schemat bazy danych
 
